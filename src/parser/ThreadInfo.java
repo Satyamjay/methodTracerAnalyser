@@ -1,5 +1,6 @@
 package parser;
 
+// A helper class to store information of threads
 public class ThreadInfo {
 	private String threadID;
 	private String threadName;

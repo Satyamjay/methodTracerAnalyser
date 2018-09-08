@@ -1,6 +1,8 @@
 package gui;
 
 import java.awt.EventQueue;
+import java.io.File;
+
 import parser.*;
 
 import javax.swing.JFrame;
@@ -13,7 +15,8 @@ public class mainWindow {
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
-		Parser p = new Parser();
+		File fileName = new File("demoLogs/demoAvg.log");
+		Parser p = new Parser(fileName);
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
