@@ -8,24 +8,19 @@ public class Method {
 	private boolean staticOrNot;	// Set True if method is static
 	private String thisPointer;
 	
-	public Method(String mName, String cName, String sTime, String eTime, boolean sOrNot, String tPointer){
+	public Method(String mName, String cName, String sTime, boolean sOrNot){
 		this.setMethodName(mName);
 		this.className = cName;
 		this.startTime = sTime;
-		this.endTime = eTime;
 		this.staticOrNot = sOrNot;
+	}
+	
+	public Method(String mName, String cName, String sTime, boolean sOrNot, String tPointer){
+		this(mName, cName, sTime, sOrNot);
 		this.thisPointer = tPointer;
 	}
-	
-	public Method(String mName, String cName, String sTime, String eTime, boolean sOrNot){
-		this.setMethodName(mName);
-		this.className = cName;
-		this.startTime = sTime;
-		this.endTime = eTime;
-		this.staticOrNot = sOrNot;
-	}
-	
-	
+
+
 	public String getClassName() {
 		return className;
 	}

@@ -3,10 +3,12 @@
  */
 package parser;
 import parser.Method;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -120,31 +122,56 @@ public class Parser{
 				break;
 			}
 		}
-		String timePattern = "([0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{9})";
-		String threadIdPattern = "[\\*]?(0x[a-fA-F0-9]+)";
-		String methodTraceIdPattern = "(mt\\.[0-9]+)";
-		String typePattern = "(Entry|Exit)";
-		String traceEntryPattern = "([><].*)";
+		String timePattern = "([0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{9})"; // group 1
+		String threadIdPattern = "[\\*]?(0x[a-fA-F0-9]+)";	// group 2
+		String methodTraceIdPattern = "(mt\\.[0-9]+)"; 	// group 3
+		String typePattern = "(Entry|Exit)";	// group 4
+		String traceEntryPattern = "[><]([a-zA-Z0-9]+)\\.([a-zA-Z0-9<>]+)\\((.+)?\\)[A-Z\\]]\\s(.*)"; 	// group 5,6,7,8
 		pat = Pattern.compile(timePattern+"\\s+"+threadIdPattern+"\\s+"+methodTraceIdPattern+"\\s+"+typePattern+"\\s+"+traceEntryPattern);
 		String methodName;
 		String className;
 		String startTime;
 		String endTime;
-		boolean staticOrNot;	// Set True if method is static
 		String thisPointer;
+		//System.out.print(timePattern+"\\s+"+threadIdPattern+"\\s+"+methodTraceIdPattern+"\\s+"+typePattern+"\\s+"+traceEntryPattern);
+		boolean staticOrNot;	// Set True if method is static
+		Stack<Method> methods = new Stack<>();
 		while(sc.hasNext()){
 			nextLine = sc.nextLine();
 			m = pat.matcher(nextLine);
 			if(m.matches()){
 				if(m.group(4).equals("Entry")){
+					startTime = m.group(1);
+					className = m.group(5);
+					methodName = getMethodName(m.group(6));
+					if(m.group(8).contains("static")){
+						staticOrNot = true;
+						Method method = new Method(methodName, className, startTime, staticOrNot);
+						methods.push(method);
+					}
+					else{
+						staticOrNot =false;
+						Pattern thisPointerPattern = Pattern.compile(".*(0x[0-9a-fA-F]+)$");
+						m = thisPointerPattern.matcher(m.group(8));
+						if(m.matches()){
+							thisPointer = m.group(1);
+							Method method = new Method(methodName, className, startTime, staticOrNot, thisPointer);
+							methods.push(method);
+						}
+					}
+				}
+				else{
+					
 					
 				}
 			}
-			else{
-				break;
-			}
 		}
 		
+	}
+
+	private String getMethodName(String group) {
+		Pattern pat = Pattern.compile("");
+		return null;
 	}
 	
 	
