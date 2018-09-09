@@ -15,7 +15,7 @@ public class mainWindow {
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
-		File fileName = new File("demoLogs/demoAvg.log");
+		File fileName = new File("demoLogs/demoMultiThread.log");
 		Parser p = new Parser(fileName);
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
