@@ -7,6 +7,7 @@ import parser.Method;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Stack;
 import java.util.Scanner;
@@ -47,7 +48,7 @@ public class Parser{
 	// This method gets all the threads listed in the log file
 	private HashMap<String, Threads> getThreadInfo(Scanner sc){
 		boolean found = false;
-		Pattern pat = Pattern.compile("\\s{8}(0x[a-fA-F0-9]+)\\s{2}([a-fA-Z0-9]+)"); // Pattern example:- [        0x26e0500  main]
+		Pattern pat = Pattern.compile("\\s{8}(0x[a-fA-F0-9]+)\\s{2}(.+)"); // Pattern example:- [        0x26e0500  main]
 		// Find Active Threads line in the file
 		while(sc.hasNextLine()){
 			found = Pattern.matches("Active Threads :", sc.nextLine());
@@ -64,7 +65,7 @@ public class Parser{
 				if(m.matches()){
 					threadInfoList.put(m.group(1),(new Threads(m.group(1),m.group(2))));
 				}
-				if(nextLine.equals("")){
+				else{
 					break;
 				}
 			}
@@ -126,7 +127,6 @@ public class Parser{
 			m = pat.matcher(nextLine);
 			if(m.matches()){
 				found = true;
-				System.out.println("found");
 				break;
 			}
 		}
@@ -177,8 +177,8 @@ public class Parser{
 				}
 				else{
 					method = methods.pop();
-					method.setEndTime(m.group(1));
-					activeThreads.get(m.group(2)).addMethod(method);			
+					method.setEndTime(m.group(1)); 
+					activeThreads.get(m.group(2)).addMethod(method);
 				}
 			}
 			else{
@@ -192,7 +192,14 @@ public class Parser{
 				activeThreads.get(met.getThreadId()).addMethod(met);
 			}
 		}		
-	}	
+	}
+	
+	public HashMap<String, Threads> getActiveThreads(){
+		return activeThreads;
+	}
+	public double getTraceTime(){
+		return traceTime;
+	}
 	
  }
 	
