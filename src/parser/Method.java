@@ -3,20 +3,23 @@ package parser;
 public class Method {
 	private String methodName;
 	private String className;
+	private String threadId;
 	private String startTime;
 	private String endTime;
 	private boolean staticOrNot;	// Set True if method is static
 	private String thisPointer;
 	
-	public Method(String mName, String cName, String sTime, boolean sOrNot){
+	public Method(String mName, String cName, String tid, String sTime, boolean sOrNot){
 		this.setMethodName(mName);
 		this.className = cName;
+		this.threadId = tid;
 		this.startTime = sTime;
 		this.staticOrNot = sOrNot;
+		this.endTime = "";
 	}
 	
-	public Method(String mName, String cName, String sTime, boolean sOrNot, String tPointer){
-		this(mName, cName, sTime, sOrNot);
+	public Method(String mName, String cName, String tid, String sTime, boolean sOrNot, String tPointer){
+		this(mName, cName, tid, sTime, sOrNot);
 		this.thisPointer = tPointer;
 	}
 
@@ -58,5 +61,23 @@ public class Method {
 
 	public void setMethodName(String methodName) {
 		this.methodName = methodName;
+	}
+
+	public String getThreadId() {
+		return threadId;
+	}
+
+	public void setThreadId(String threadId) {
+		this.threadId = threadId;
+	}
+	
+	// Tells if the method ended its execution or not according to the log file
+	public boolean hasEnded(){
+		if(endTime.equals("")){
+			return false;
+		}
+		else{
+			return true;
+		}
 	}
 }

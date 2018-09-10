@@ -16,6 +16,8 @@ import java.util.regex.Pattern;
 import parser.Threads;
 
 import java.util.HashMap;
+
+import javax.swing.text.StyledEditorKit.ForegroundAction;
 /**
  ** @author satyam
  **
@@ -23,6 +25,7 @@ import java.util.HashMap;
 // This class will extract useful information from the trace file
 public class Parser{
 	// Contains all the threads logged in the file
+	// and the threads contain their methods
 	private HashMap<String, Threads> activeThreads;
 	// Contains start-time and end-time of the trace
 	private double traceTime; // in seconds 
@@ -30,9 +33,9 @@ public class Parser{
 		Scanner sc = null;
 		try{
 			sc = new Scanner(fileName); 
-			activeThreads = getThreadInfo(sc);
-			traceTime = getTraceTime(sc);
-			scanMethods(sc);
+			activeThreads = getThreadInfo(sc);			// First scan for thread names
+			traceTime = getTraceTime(sc);				// Then pass the scanner object to find the time
+			scanMethods(sc);							// Then pass the scanner object to scan the methods
 			System.out.println(traceTime);
 		}
 		catch(IOException e){
@@ -41,6 +44,7 @@ public class Parser{
 	}
 
 
+	// This method gets all the threads listed in the log file
 	private HashMap<String, Threads> getThreadInfo(Scanner sc){
 		boolean found = false;
 		Pattern pat = Pattern.compile("\\s{8}(0x[a-fA-F0-9]+)\\s{2}([a-fA-Z0-9]+)"); // Pattern example:- [        0x26e0500  main]
@@ -69,6 +73,8 @@ public class Parser{
 		return null;
 	}
 	
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
+	// Get trace time according to log file
 	private double getTraceTime(Scanner sc){
 		Pattern pat1 = Pattern.compile("First tracepoint\\s{0,}:\\s{0,9}([0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{9})"); // Pattern example:- [First Tracepoint : 19:04:23.947000000
 		Pattern pat2 = Pattern.compile("Last tracepoint\\s{0,}:\\s{0,9}([0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{9})"); // Pattern example:- [Last Tracepoint : 19:04:23.947000000
@@ -107,7 +113,9 @@ public class Parser{
 		return (endHour*3600+endMin*60+endSec+endMillisec) - (startHour*3600+startMin*60+startSec+startMillisec);
 		
 	}
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
+	// Scan all the methods listed in the log file
 	private void scanMethods(Scanner sc) {
 		Pattern pat = Pattern.compile("J9 timer[(]UTC[)].*");
 		String nextLine;
@@ -122,20 +130,26 @@ public class Parser{
 				break;
 			}
 		}
-		String timePattern = "([0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{9})"; // group 1
-		String threadIdPattern = "[\\*]?(0x[a-fA-F0-9]+)";	// group 2
-		String methodTraceIdPattern = "(mt\\.[0-9]+)"; 	// group 3
-		String typePattern = "(Entry|Exit)";	// group 4
-		String traceEntryPattern = "[><]([a-zA-Z0-9]+)\\.([a-zA-Z0-9<>]+)\\((.+)?\\)[A-Z\\]]\\s(.*)"; 	// group 5,6,7,8
+		String timePattern = "([0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{9})"; // group 1 :- Contains time in this format 19:04:24.092291382
+		String threadIdPattern = "[\\*]?(0x[a-fA-F0-9]+)";	// group 2 :- Contains threadID in this format *0x26e0500
+		String methodTraceIdPattern = "(mt\\.[0-9]+)"; 	// group 3 :- Contains trace id in this format mt.3
+		String typePattern = "(Entry|Exit)";	// group 4 :- Contains Entry or Exit
+		// group 5 :- java/util/Scanner  (ClassName)
+		// group 6 :- <clinit>			 (MethodName)
+		// group 7 :- ()                 (Parameters)
+		// group 8 :- static method      (Static or not)
+		String traceEntryPattern = "[><]([a-zA-Z0-9]+)\\.([a-zA-Z0-9<>]+)\\((.+)?\\)[A-Z\\]]\\s(.*)"; 	
 		pat = Pattern.compile(timePattern+"\\s+"+threadIdPattern+"\\s+"+methodTraceIdPattern+"\\s+"+typePattern+"\\s+"+traceEntryPattern);
 		String methodName;
 		String className;
+		String threadId;
 		String startTime;
 		String endTime;
 		String thisPointer;
 		//System.out.print(timePattern+"\\s+"+threadIdPattern+"\\s+"+methodTraceIdPattern+"\\s+"+typePattern+"\\s+"+traceEntryPattern);
 		boolean staticOrNot;	// Set True if method is static
 		Stack<Method> methods = new Stack<>();
+		Method method;
 		while(sc.hasNext()){
 			nextLine = sc.nextLine();
 			m = pat.matcher(nextLine);
@@ -143,10 +157,11 @@ public class Parser{
 				if(m.group(4).equals("Entry")){
 					startTime = m.group(1);
 					className = m.group(5);
-					methodName = getMethodName(m.group(6));
+					threadId = m.group(2);
+					methodName = m.group(6);
 					if(m.group(8).contains("static")){
 						staticOrNot = true;
-						Method method = new Method(methodName, className, startTime, staticOrNot);
+						method = new Method(methodName, className, threadId, startTime, staticOrNot);
 						methods.push(method);
 					}
 					else{
@@ -155,31 +170,29 @@ public class Parser{
 						m = thisPointerPattern.matcher(m.group(8));
 						if(m.matches()){
 							thisPointer = m.group(1);
-							Method method = new Method(methodName, className, startTime, staticOrNot, thisPointer);
+							method = new Method(methodName, className, threadId, startTime, staticOrNot, thisPointer);
 							methods.push(method);
 						}
 					}
 				}
 				else{
-					
-					
+					method = methods.pop();
+					method.setEndTime(m.group(1));
+					activeThreads.get(m.group(2)).addMethod(method);			
 				}
 			}
+			else{
+				break;
+			}
 		}
-		
-	}
-
-	private String getMethodName(String group) {
-		Pattern pat = Pattern.compile("");
-		return null;
-	}
-	
-	
-	
-	
-	
-	
-	
+		// Check if stack is empty, if it is not empty that means some methods that started has not exited, Next line of codes
+		// handles that situation
+		if(!methods.empty()){
+			for(Method met: methods){
+				activeThreads.get(met.getThreadId()).addMethod(met);
+			}
+		}		
+	}	
 	
  }
 	
