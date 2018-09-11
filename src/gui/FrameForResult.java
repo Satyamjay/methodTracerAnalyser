@@ -21,6 +21,9 @@ public class FrameForResult extends JFrame {
 		contentPane = new JPanel();
 		contentPane.setBackground(SystemColor.window);
 		setContentPane(contentPane);
+		JPanel graphAnalyser = new GraphAnalyserPanel();
+		this.getContentPane().add(graphAnalyser);
+		
 	}
 
 }
