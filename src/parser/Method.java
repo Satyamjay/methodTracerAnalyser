@@ -1,13 +1,15 @@
 package parser;
+import parser.Parser;
 
 public class Method {
 	private String methodName;
 	private String className;
 	private String threadId;
 	private String startTime;
-	private String endTime;
+	private String endTime = "";
 	private boolean staticOrNot;	// Set True if method is static
 	private String thisPointer;
+	private double runTime;
 	
 	public Method(String mName, String cName, String tid, String sTime, boolean sOrNot){
 		this.setMethodName(mName);
@@ -70,6 +72,9 @@ public class Method {
 	public void setThreadId(String threadId) {
 		this.threadId = threadId;
 	}
+	public double getRuntime(){
+		return runTime;
+	}
 	
 	// Tells if the method ended its execution or not according to the log file
 	public boolean hasEnded(){
@@ -80,4 +85,14 @@ public class Method {
 			return true;
 		}
 	}
+	// Calculate total runtime of the method
+	public void calculateRuntime(){
+		if(!endTime.equals("")){
+			runTime = Parser.timeDifference(startTime, endTime);
+		}
+		else{
+			runTime = -1; 					// Set runtime to -1 if the method never ended
+		}
+	}
+	
 }

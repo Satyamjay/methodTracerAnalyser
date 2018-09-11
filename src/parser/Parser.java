@@ -30,7 +30,7 @@ public class Parser{
 	private HashMap<String, Threads> activeThreads;
 	// Contains start-time and end-time of the trace
 	private double traceTime; // in seconds 
-	public Parser(File fileName){
+	public Parser(File fileName) throws InvalidLogFileException{
 		Scanner sc = null;
 		try{
 			sc = new Scanner(fileName); 
@@ -46,7 +46,7 @@ public class Parser{
 
 
 	// This method gets all the threads listed in the log file
-	private HashMap<String, Threads> getThreadInfo(Scanner sc){
+	private HashMap<String, Threads> getThreadInfo(Scanner sc) throws InvalidLogFileException{
 		boolean found = false;
 		Pattern pat = Pattern.compile("\\s{8}(0x[a-fA-F0-9]+)\\s{2}(.+)"); // Pattern example:- [        0x26e0500  main]
 		// Find Active Threads line in the file
@@ -71,12 +71,12 @@ public class Parser{
 			}
 			return threadInfoList;
 		}
-		return null;
+		throw new InvalidLogFileException("Invalid Log file");
 	}
 	
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
 	// Get trace time according to log file
-	private double getTraceTime(Scanner sc){
+	private double getTraceTime(Scanner sc) throws InvalidLogFileException{
 		Pattern pat1 = Pattern.compile("First tracepoint\\s{0,}:\\s{0,9}([0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{9})"); // Pattern example:- [First Tracepoint : 19:04:23.947000000
 		Pattern pat2 = Pattern.compile("Last tracepoint\\s{0,}:\\s{0,9}([0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{9})"); // Pattern example:- [Last Tracepoint : 19:04:23.947000000
 		String firstTracepoint = "";
@@ -97,11 +97,14 @@ public class Parser{
 				break;
 			}
 		}
+		if(!sc.hasNextLine()){
+			throw new InvalidLogFileException("Invalid Log file");
+		}
 		return timeDifference(firstTracepoint,lastTracePoint);
 	}
 	
 	// in this format :- HH:mm:ss.SSSSSSSSS
-	private double timeDifference(String startTime, String endTime){
+	public static double timeDifference(String startTime, String endTime){
 		int startHour = Integer.parseInt(startTime.substring(0,2));
 		int startMin = Integer.parseInt(startTime.substring(3,5));
 		int startSec = Integer.parseInt(startTime.substring(6,8));
@@ -144,7 +147,6 @@ public class Parser{
 		String className;
 		String threadId;
 		String startTime;
-		String endTime;
 		String thisPointer;
 		//System.out.print(timePattern+"\\s+"+threadIdPattern+"\\s+"+methodTraceIdPattern+"\\s+"+typePattern+"\\s+"+traceEntryPattern);
 		boolean staticOrNot;	// Set True if method is static
@@ -191,7 +193,13 @@ public class Parser{
 			for(Method met: methods){
 				activeThreads.get(met.getThreadId()).addMethod(met);
 			}
-		}		
+		}
+		// Calculate runtime of all the methods in all the thread
+		for(Threads th: activeThreads.values()){
+			for(Method met: th.getMethods()){
+					met.calculateRuntime();
+			}
+		}
 	}
 	
 	public HashMap<String, Threads> getActiveThreads(){
@@ -203,6 +211,8 @@ public class Parser{
 	
  }
 	
+
+
 
 
 
