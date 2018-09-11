@@ -3,11 +3,11 @@
  */
 package parser;
 import parser.Method;
+
 import java.util.Comparator;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
@@ -19,7 +19,6 @@ import parser.Threads;
 
 import java.util.HashMap;
 
-import javax.swing.text.StyledEditorKit.ForegroundAction;
 /**
  ** @author satyam
  **
@@ -138,18 +137,21 @@ public class Parser{
 		String threadIdPattern = "[\\*]?(0x[a-fA-F0-9]+)";	// group 2 :- Contains threadID in this format *0x26e0500
 		String methodTraceIdPattern = "(mt\\.[0-9]+)"; 	// group 3 :- Contains trace id in this format mt.3
 		String typePattern = "(Entry|Exit)";	// group 4 :- Contains Entry or Exit
-		// group 5 :- java/util/Scanner  (ClassName)
-		// group 6 :- <clinit>			 (MethodName)
-		// group 7 :- ()                 (Parameters)
-		// group 8 :- static method      (Static or not)
-		String traceEntryPattern = "[><]([\\/a-zA-Z0-9]+)\\.([a-zA-Z0-9<>]+)\\((.+)?\\)[A-Z\\]](.*)"; 	
+		// group 5 :- java/util/Scanner  		(ClassName)
+		// group 6 :- <clinit>			 		(MethodName)
+		// group 7 :- (Ljava/lang/Readable;)	(Parameters)
+		// group 8 :- Ljava/util/Scanner;		(ReturnType)
+		// group 9 :- static method      		(Static or not)
+		String traceEntryPattern = "[><]([\\/a-zA-Z0-9]+)\\.([a-zA-Z0-9<>]+)\\((.+)?\\)([\\S]+)\\s(.*)"; 	
 		pat = Pattern.compile(timePattern+"\\s+"+threadIdPattern+"\\s+"+methodTraceIdPattern+"\\s+"+typePattern+"\\s+"+traceEntryPattern);
 		String methodName;
 		String className;
 		String threadId;
 		String startTime;
+		String parameters[];
+		String returnType;
 		String thisPointer;
-		System.out.print(timePattern+"\\s+"+threadIdPattern+"\\s+"+methodTraceIdPattern+"\\s+"+typePattern+"\\s+"+traceEntryPattern);
+		System.out.println(timePattern+"\\s+"+threadIdPattern+"\\s+"+methodTraceIdPattern+"\\s+"+typePattern+"\\s+"+traceEntryPattern);
 		boolean staticOrNot;	// Set True if method is static
 		Stack<Method> methods = new Stack<>();
 		Method method;
@@ -162,18 +164,21 @@ public class Parser{
 					className = m.group(5);
 					threadId = m.group(2);
 					methodName = m.group(6);
-					if(m.group(8).contains("static")){
+					parameters = getParameters(m.group(7));
+					returnType = getReturnType(m.group(8));
+					
+					if(m.group(9).contains("static")){
 						staticOrNot = true;
-						method = new Method(methodName, className, threadId, startTime, staticOrNot);
+						method = new Method(methodName, className, threadId, startTime, staticOrNot, parameters, returnType);
 						methods.push(method);
 					}
 					else{
 						staticOrNot =false;
-						Pattern thisPointerPattern = Pattern.compile(".*(0x[0-9a-fA-F]+)$");
-						m = thisPointerPattern.matcher(m.group(8));
+						Pattern thisPointerPattern = Pattern.compile(".*(0x[0-9a-fA-F]+)");
+						m = thisPointerPattern.matcher(m.group(9));
 						if(m.matches()){
 							thisPointer = m.group(1);
-							method = new Method(methodName, className, threadId, startTime, staticOrNot, thisPointer);
+							method = new Method(methodName, className, threadId, startTime, staticOrNot, thisPointer, parameters, returnType);
 							methods.push(method);
 						}
 					}
@@ -202,6 +207,32 @@ public class Parser{
 			}
 		}
 	}
+
+	public String[] getParameters(String s){
+		String[] params = {"void"};
+		if(!(s == null)){
+			params = s.split(";");
+			for(String s1: params){
+				System.out.println(s1);
+			}
+			System.out.println("XXXXX");
+			return params;
+		}
+		return params;
+	}
+	private String getReturnType(String s) {
+		if(s.equals("V")){
+			return "void";
+		}
+		else{
+			Pattern p = Pattern.compile("[A-Z](.*);");
+			Matcher m = p.matcher(s);
+			if(m.matches()){
+				return m.group(1);
+			}
+		}
+		return "void";
+	}
 	
 	public HashMap<String, Threads> getActiveThreads(){
 		return activeThreads;
@@ -209,6 +240,8 @@ public class Parser{
 	public double getTraceTime(){
 		return traceTime;
 	}
+	
+	// Get all the methods and sort them by their runtime
 	public List<Method> sortByRuntime(){
 		List<Method> runtimes = new ArrayList<>();
 		for(Threads th: activeThreads.values()){
@@ -216,12 +249,12 @@ public class Parser{
 				if(met.hasEnded()){
 					runtimes.add(met);
 				}
-				}
+			}
 		}
 		Collections.sort(runtimes, new Parser.CustomComparator());
 		return runtimes;
 	}
-	
+	// Comparator to sort
 	static class CustomComparator implements Comparator<Method> {
 	    @Override
 	    public int compare(Method m1, Method m2) {

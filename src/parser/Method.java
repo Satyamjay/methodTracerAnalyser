@@ -6,13 +6,18 @@ public class Method {
 	private String className;
 	private String threadId;
 	private String startTime;
+	private String parameters[];
+	private String returnType;
 	private String endTime = "";
 	private boolean staticOrNot;	// Set True if method is static
 	private String thisPointer;
 	private double runTime;
+
 	
-	public Method(String mName, String cName, String tid, String sTime, boolean sOrNot){
+	public Method(String mName, String cName, String tid, String sTime, boolean sOrNot, String[] params, String rType){
 		this.setMethodName(mName);
+		this.parameters = params;
+		this.returnType = rType;
 		this.className = cName;
 		this.threadId = tid;
 		this.startTime = sTime;
@@ -20,8 +25,8 @@ public class Method {
 		this.endTime = "";
 	}
 	
-	public Method(String mName, String cName, String tid, String sTime, boolean sOrNot, String tPointer){
-		this(mName, cName, tid, sTime, sOrNot);
+	public Method(String mName, String cName, String tid, String sTime, boolean sOrNot, String tPointer, String[] params, String rType){
+		this(mName, cName, tid, sTime, sOrNot, params, rType);
 		this.thisPointer = tPointer;
 	}
 
@@ -93,6 +98,22 @@ public class Method {
 		else{
 			runTime = -1; 					// Set runtime to -1 if the method never ended
 		}
+	}
+
+	public String getReturnType() {
+		return returnType;
+	}
+
+	public void setReturnType(String returnType) {
+		this.returnType = returnType;
+	}
+
+	public String[] getParameters() {
+		return parameters;
+	}
+
+	public void setParameters(String parameters[]) {
+		this.parameters = parameters;
 	}
 	
 }
