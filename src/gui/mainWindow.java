@@ -63,7 +63,7 @@ public class mainWindow {
 					int returnVal1 = jfc1.showOpenDialog(frame);
 					if(returnVal1 == JFileChooser.APPROVE_OPTION) {
 						Parser p1 = new Parser(jfc1.getSelectedFile());
-						int result = JOptionPane.showConfirmDialog((Component) null, "Wanna Compare with other log?","alert", JOptionPane.YES_NO_OPTION);
+						int result = JOptionPane.showConfirmDialog((Component) null, "Wanna Compare with another log?","alert", JOptionPane.YES_NO_OPTION);
 						if( result == JOptionPane.YES_OPTION){
 							JFileChooser jfc2 = new JFileChooser();
 							int returnVal2 = jfc2.showOpenDialog(frame);
