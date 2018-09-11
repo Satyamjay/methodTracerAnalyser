@@ -1,5 +1,7 @@
 package gui;
 
+import java.util.HashMap;
+
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
@@ -8,14 +10,23 @@ import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
+import parser.Method;
+import parser.Threads;
+import parser.Parser;
 public class ChartBuilder {
 	private JFreeChart chart;
-	public ChartBuilder(){
+	public ChartBuilder(Parser p){
 		
 	  final DefaultCategoryDataset dataset = new DefaultCategoryDataset( );
-	  dataset.addValue( 1.0 , "method1" , "" );        
-      dataset.addValue( 5.0 , "method2" , "" );        
-      dataset.addValue( 4.0 , "method3" , "" );         
+	  HashMap<String, Threads> activeThreads = p.getActiveThreads();
+	  for(Threads th: activeThreads.values()){
+			System.out.println(th);
+			for(Method met: th.getMethods()){
+				if(met.hasEnded()){
+				dataset.addValue( met.getRuntime() , met.getMethodName() , "" );        
+				}
+			}
+		}
 	  chart = ChartFactory.createBarChart(
 			   "Method Runtime Comparision", // Title
 			   "Methods", // x-axis Label

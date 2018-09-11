@@ -16,13 +16,11 @@ public class FrameForResult extends JFrame {
 	 * Create the frame.
 	 */
 	public FrameForResult() {
-		this.setBounds(100, 100, 450, 300);
+		this.setBounds(100, 100, 800, 600);
 		this.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		contentPane = new JPanel();
 		contentPane.setBackground(SystemColor.window);
 		setContentPane(contentPane);
-		JPanel graphAnalyser = new GraphAnalyserPanel();
-		this.getContentPane().add(graphAnalyser);
 		
 	}
 

@@ -3,11 +3,12 @@
  */
 package parser;
 import parser.Method;
-
+import java.util.Comparator;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
 import java.util.Scanner;
@@ -141,14 +142,14 @@ public class Parser{
 		// group 6 :- <clinit>			 (MethodName)
 		// group 7 :- ()                 (Parameters)
 		// group 8 :- static method      (Static or not)
-		String traceEntryPattern = "[><]([a-zA-Z0-9]+)\\.([a-zA-Z0-9<>]+)\\((.+)?\\)[A-Z\\]]\\s(.*)"; 	
+		String traceEntryPattern = "[><]([\\/a-zA-Z0-9]+)\\.([a-zA-Z0-9<>]+)\\((.+)?\\)[A-Z\\]](.*)"; 	
 		pat = Pattern.compile(timePattern+"\\s+"+threadIdPattern+"\\s+"+methodTraceIdPattern+"\\s+"+typePattern+"\\s+"+traceEntryPattern);
 		String methodName;
 		String className;
 		String threadId;
 		String startTime;
 		String thisPointer;
-		//System.out.print(timePattern+"\\s+"+threadIdPattern+"\\s+"+methodTraceIdPattern+"\\s+"+typePattern+"\\s+"+traceEntryPattern);
+		System.out.print(timePattern+"\\s+"+threadIdPattern+"\\s+"+methodTraceIdPattern+"\\s+"+typePattern+"\\s+"+traceEntryPattern);
 		boolean staticOrNot;	// Set True if method is static
 		Stack<Method> methods = new Stack<>();
 		Method method;
@@ -207,6 +208,28 @@ public class Parser{
 	}
 	public double getTraceTime(){
 		return traceTime;
+	}
+	public List<Method> sortByRuntime(){
+		List<Method> runtimes = new ArrayList<>();
+		for(Threads th: activeThreads.values()){
+			for(Method met: th.getMethods()){
+				if(met.hasEnded()){
+					runtimes.add(met);
+				}
+				}
+		}
+		Collections.sort(runtimes, new Parser.CustomComparator());
+		return runtimes;
+	}
+	
+	static class CustomComparator implements Comparator<Method> {
+	    @Override
+	    public int compare(Method m1, Method m2) {
+	    	double m1Runtime = m1.getRuntime();
+	        double m2Runtime = m2.getRuntime();
+	        // uses compareTo method of String class to compare names of the employee
+	        return Double.compare(m1Runtime, m2Runtime);
+	    }
 	}
 	
  }
