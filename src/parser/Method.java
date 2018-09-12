@@ -2,26 +2,35 @@ package parser;
 import parser.Parser;
 
 public class Method {
+	private static int numberOfMethods = 1;
 	private String methodName;
 	private String className;
 	private String threadId;
 	private String startTime;
+	private String parameters[];
+	private String returnType;
 	private String endTime = "";
 	private boolean staticOrNot;	// Set True if method is static
 	private String thisPointer;
 	private double runTime;
+	private int id;
+
 	
-	public Method(String mName, String cName, String tid, String sTime, boolean sOrNot){
-		this.setMethodName(mName);
+	public Method(String mName, String cName, String tid, String sTime, boolean sOrNot, String[] params, String rType){
+		this.methodName = mName;
+		this.parameters = params;
+		this.returnType = rType;
 		this.className = cName;
 		this.threadId = tid;
 		this.startTime = sTime;
 		this.staticOrNot = sOrNot;
 		this.endTime = "";
+		this.setId(numberOfMethods);
+		numberOfMethods++;
 	}
 	
-	public Method(String mName, String cName, String tid, String sTime, boolean sOrNot, String tPointer){
-		this(mName, cName, tid, sTime, sOrNot);
+	public Method(String mName, String cName, String tid, String sTime, boolean sOrNot, String tPointer, String[] params, String rType){
+		this(mName, cName, tid, sTime, sOrNot, params, rType);
 		this.thisPointer = tPointer;
 	}
 
@@ -93,6 +102,30 @@ public class Method {
 		else{
 			runTime = -1; 					// Set runtime to -1 if the method never ended
 		}
+	}
+
+	public String getReturnType() {
+		return returnType;
+	}
+
+	public void setReturnType(String returnType) {
+		this.returnType = returnType;
+	}
+
+	public String[] getParameters() {
+		return parameters;
+	}
+
+	public void setParameters(String parameters[]) {
+		this.parameters = parameters;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 	
 }

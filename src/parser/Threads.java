@@ -9,8 +9,6 @@ public class Threads {
 	private String threadID;
 	private String threadName;
 	private List<Method> methods = new ArrayList<>();
-	
-	
 	public Threads(String tid, String tname){
 		this.setThreadID(tid);
 		this.setThreadName(tname);

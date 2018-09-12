@@ -1,6 +1,5 @@
 package gui;
 
-import java.util.HashMap;
 import java.util.List;
 
 import javax.swing.JTable;
@@ -11,7 +10,6 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.DefaultCategoryDataset;
 
-import parser.Threads;
 
 
 
@@ -25,6 +23,7 @@ public class ChartBuilder {
 	 JTable table = new JTable(model);
 	public ChartBuilder(Parser p){
 	  final DefaultCategoryDataset dataset = new DefaultCategoryDataset( );
+<<<<<<< HEAD
 	  HashMap<String, Threads> activeThreads = p.getActiveThreads();
 	  for(Threads th: activeThreads.values()){
 			System.out.println(th);
@@ -35,8 +34,8 @@ public class ChartBuilder {
 				}
 			}
 		}
-        
-
+        chart = ChartFactory.createBarChart(
+=======
 	  List<Method> methods = p.sortByRuntime();
 	  if(methods.size()>=30){
 		  methods = methods.subList(0, 30);
@@ -45,7 +44,7 @@ public class ChartBuilder {
 		  dataset.addValue( met.getRuntime() , met.getMethodName()+" ("+met.getId()+")" , "" );        
 	  }
 	  chart = ChartFactory.createBarChart(
-
+>>>>>>> 6d80eae441ef2e32598b0d5586793e4b9eb45c39
 			   "Method Runtime Comparision", // Title
 			   "Methods", // x-axis Label
 			   "Run Time", // y-axis Label
