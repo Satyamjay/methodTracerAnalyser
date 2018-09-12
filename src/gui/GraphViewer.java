@@ -1,12 +1,10 @@
 package gui;
 
 import java.awt.BorderLayout;
-
 import java.awt.Dimension;
 import java.awt.Toolkit;
 
 import parser.Method;
-
 import parser.Parser;
 
 import java.awt.EventQueue;
@@ -18,9 +16,7 @@ import java.util.regex.Pattern;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-
 import javax.swing.JTable;
-
 import javax.swing.border.EmptyBorder;
 
 import org.jfree.chart.ChartMouseEvent;
@@ -45,9 +41,6 @@ public class GraphViewer extends JFrame {
 		contentPane.setLayout(new BorderLayout(0, 0));
 		ChartBuilder chart = new ChartBuilder(p);
 		ChartPanel cp = new ChartPanel(chart.getChart());
-
-		
-
 		cp.addChartMouseListener(new ChartMouseListener() {
 			
 			@Override
@@ -80,12 +73,9 @@ public class GraphViewer extends JFrame {
 				}
 			}
 		});
-
 		contentPane.setLayout(new java.awt.BorderLayout());
 		contentPane.add(cp, BorderLayout.CENTER);
 		setContentPane(contentPane);
-		
-	    
 		
 	}
 
