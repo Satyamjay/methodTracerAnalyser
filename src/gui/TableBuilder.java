@@ -46,7 +46,7 @@ public class TableBuilder {
                   Object value, boolean isSelected, boolean hasFocus, int row, int col) {
               super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col);
               Double status = (Double)table.getModel().getValueAt(row, 1);
-              if (status == 0.0) {
+              if (status == -1) {
                   setBackground(Color.RED);
                   setForeground(Color.WHITE);
               } else {
