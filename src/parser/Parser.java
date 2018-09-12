@@ -283,7 +283,7 @@ public class Parser{
 	    	double m1Runtime = m1.getRuntime();
 	        double m2Runtime = m2.getRuntime();
 	        // uses compareTo method of String class to compare names of the employee
-	        return Double.compare(m1Runtime, m2Runtime);
+	        return Double.compare(m1Runtime, m2Runtime)*-1;
 	    }
 	}
 	
