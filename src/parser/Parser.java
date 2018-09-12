@@ -273,7 +273,7 @@ public class Parser{
 					}
 				}
 			}
-			return (ArrayList<Method>) , methods;
+			return (ArrayList<Method>) methods;
 		}
 			
 	// Comparator to sort
