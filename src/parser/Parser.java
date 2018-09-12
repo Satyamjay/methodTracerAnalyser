@@ -249,19 +249,33 @@ public class Parser{
 	}
 	
 	
-	// Get all the methods and sort them by their runtime
+	// Get all the methods and sort them by their runtime who have completed their execution.
 	public ArrayList<Method> sortByRuntime(){
-		List<Method> runtimes = new ArrayList<>();
+		List<Method> methods = new ArrayList<>();
 		for(Threads th: activeThreads.values()){
 			for(Method met: th.getMethods()){
 				if(met.hasEnded()){
-					runtimes.add(met);
+					methods.add(met);
 				}
 			}
 		}
-		Collections.sort(runtimes, new Parser.CustomComparator());
-		return (ArrayList<Method>) runtimes;
+		Collections.sort(methods, new Parser.CustomComparator());
+		return (ArrayList<Method>) methods;
 	}
+	
+	// Get all the methods who have not completed their execution.
+		public ArrayList<Method> getIncompleteMethods(){
+			List<Method>  methods = new ArrayList<>();
+			for(Threads th: activeThreads.values()){
+				for(Method met: th.getMethods()){
+					if(!met.hasEnded()){
+						methods.add(met);
+					}
+				}
+			}
+			return (ArrayList<Method>) , methods;
+		}
+			
 	// Comparator to sort
 	static class CustomComparator implements Comparator<Method> {
 	    @Override
