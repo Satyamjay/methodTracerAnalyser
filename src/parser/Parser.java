@@ -142,7 +142,7 @@ public class Parser{
 		// group 7 :- (Ljava/lang/Readable;)	(Parameters)
 		// group 8 :- Ljava/util/Scanner;		(ReturnType)
 		// group 9 :- static method      		(Static or not)
-		String traceEntryPattern = "[><]([\\/a-zA-Z0-9]+)\\.([a-zA-Z0-9<>]+)\\((.+)?\\)([\\S]+)\\s(.*)"; 	
+		String traceEntryPattern = "[><](.+)\\.([a-zA-Z0-9<>]+)\\((.+)?\\)([\\S]+)\\s(.*)"; 	
 		pat = Pattern.compile(timePattern+"\\s+"+threadIdPattern+"\\s+"+methodTraceIdPattern+"\\s+"+typePattern+"\\s+"+traceEntryPattern);
 		String methodName;
 		String className;
@@ -151,7 +151,7 @@ public class Parser{
 		String parameters[];
 		String returnType;
 		String thisPointer;
-		System.out.println(timePattern+"\\s+"+threadIdPattern+"\\s+"+methodTraceIdPattern+"\\s+"+typePattern+"\\s+"+traceEntryPattern);
+		//System.out.println(timePattern+"\\s+"+threadIdPattern+"\\s+"+methodTraceIdPattern+"\\s+"+typePattern+"\\s+"+traceEntryPattern);
 		boolean staticOrNot;	// Set True if method is static
 		Stack<Method> methods = new Stack<>();
 		Method method;
@@ -212,10 +212,6 @@ public class Parser{
 		String[] params = {"void"};
 		if(!(s == null)){
 			params = s.split(";");
-			for(String s1: params){
-				System.out.println(s1);
-			}
-			System.out.println("XXXXX");
 			return params;
 		}
 		return params;
@@ -240,9 +236,21 @@ public class Parser{
 	public double getTraceTime(){
 		return traceTime;
 	}
+	public Method getMethodById(int id){
+		for(Threads th: activeThreads.values()){
+			for(Method met: th.getMethods()){
+				if(met.getId() == id){
+					return met;
+				}
+			}
+		}
+		return null;
+
+	}
+	
 	
 	// Get all the methods and sort them by their runtime
-	public List<Method> sortByRuntime(){
+	public ArrayList<Method> sortByRuntime(){
 		List<Method> runtimes = new ArrayList<>();
 		for(Threads th: activeThreads.values()){
 			for(Method met: th.getMethods()){
@@ -252,7 +260,7 @@ public class Parser{
 			}
 		}
 		Collections.sort(runtimes, new Parser.CustomComparator());
-		return runtimes;
+		return (ArrayList<Method>) runtimes;
 	}
 	// Comparator to sort
 	static class CustomComparator implements Comparator<Method> {

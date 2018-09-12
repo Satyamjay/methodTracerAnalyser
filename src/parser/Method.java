@@ -2,6 +2,7 @@ package parser;
 import parser.Parser;
 
 public class Method {
+	private static int numberOfMethods = 1;
 	private String methodName;
 	private String className;
 	private String threadId;
@@ -12,10 +13,11 @@ public class Method {
 	private boolean staticOrNot;	// Set True if method is static
 	private String thisPointer;
 	private double runTime;
+	private int id;
 
 	
 	public Method(String mName, String cName, String tid, String sTime, boolean sOrNot, String[] params, String rType){
-		this.setMethodName(mName);
+		this.methodName = mName;
 		this.parameters = params;
 		this.returnType = rType;
 		this.className = cName;
@@ -23,6 +25,8 @@ public class Method {
 		this.startTime = sTime;
 		this.staticOrNot = sOrNot;
 		this.endTime = "";
+		this.setId(numberOfMethods);
+		numberOfMethods++;
 	}
 	
 	public Method(String mName, String cName, String tid, String sTime, boolean sOrNot, String tPointer, String[] params, String rType){
@@ -114,6 +118,14 @@ public class Method {
 
 	public void setParameters(String parameters[]) {
 		this.parameters = parameters;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 	
 }
