@@ -3,6 +3,7 @@ package gui;
 import java.util.HashMap;
 
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
 import org.jfree.chart.ChartFactory;
@@ -16,36 +17,33 @@ import org.jfree.data.xy.XYSeriesCollection;
 import parser.Method;
 import parser.Threads;
 import parser.Parser;
-public class ChartBuilder {
+public class TableBuilder {
 	private JFreeChart chart;
+	//To create Table in the JFrame
 	DefaultTableModel model = new DefaultTableModel();
-	 JTable table = new JTable(model);
-	public ChartBuilder(Parser p){
+	JTable table = new JTable(model);
+	private int serialNo=1;
+	public TableBuilder(Parser p){
 		
 	  final DefaultCategoryDataset dataset = new DefaultCategoryDataset( );
 	  HashMap<String, Threads> activeThreads = p.getActiveThreads();
+	  model.addColumn("SNo");					//Adding columns to the JTable
+	  model.addColumn("Runtime");
+	  model.addColumn("Method");
 	  for(Threads th: activeThreads.values()){
 			System.out.println(th);
 			for(Method met: th.getMethods()){
 				if(met.hasEnded()){
-					dataset.addValue( met.getRuntime() , met.getMethodName() , "" ); 
-					
+						//Adding rows Dynamically to the JTable
+					    model.addRow(new Object[] {serialNo, met.getRuntime(),met.getMethodName()}); 
+					    serialNo++;
 				}
 			}
 		}
-        chart = ChartFactory.createBarChart(
-			   "Method Runtime Comparision", // Title
-			   "Methods", // x-axis Label
-			   "Run Time", // y-axis Label
-			   dataset, // Dataset
-			   PlotOrientation.VERTICAL, // Plot Orientation
-			   true, // Show Legend
-			   true, // Use tooltips
-			   false // Configure chart to generate URLs?
-			);
+   
 }
-	public JFreeChart getChart(){
-		return chart;
+	public JTable getTable(){
+		return table;
 	}
 	
 	}

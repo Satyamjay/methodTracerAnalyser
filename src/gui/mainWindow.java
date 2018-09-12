@@ -74,9 +74,11 @@ public class mainWindow {
 						else{
 							final FrameForResult frameForResult = new FrameForResult();
 							final GraphViewer graphViewer = new GraphViewer(p1);
+							final TableViewer tableViewer = new TableViewer(p1);
 							frame.setVisible(false);
 							frameForResult.setVisible(true);
 							graphViewer.setVisible(true);
+							tableViewer.setVisible(true);
 							frameForResult.addWindowListener(new java.awt.event.WindowAdapter(){
 								@Override
 								public void windowClosing(java.awt.event.WindowEvent windowEvent) {

@@ -9,31 +9,30 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
 import org.jfree.chart.ChartPanel;
 
-public class GraphViewer extends JFrame {
+public class TableViewer extends JFrame {
 
 	private JPanel contentPane;
 	/**
 	 * Create the frame.
 	 */
-	public GraphViewer(Parser p) {
+	public TableViewer(Parser p) {
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(300, 100, 450, 300);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
-		ChartBuilder chart = new ChartBuilder(p);
-		ChartPanel cp = new ChartPanel(chart.getChart());
-		
-		contentPane.setLayout(new java.awt.BorderLayout());
-		contentPane.add(cp, BorderLayout.CENTER);
-		setContentPane(contentPane);
-		
-	    
+		// Building table of analyzed log file
+		TableBuilder table = new TableBuilder(p);
+	    this.setSize(300, 300);
+	    this.add(new JScrollPane(table.getTable()));
+	    this.setVisible(true);
 		
 	}
+	
 
 }
