@@ -142,7 +142,7 @@ public class Parser{
 		// group 7 :- (Ljava/lang/Readable;)	(Parameters)
 		// group 8 :- Ljava/util/Scanner;		(ReturnType)
 		// group 9 :- static method      		(Static or not)
-		String traceEntryPattern = "[><](.+)\\.([a-zA-Z0-9<>]+)\\((.+)?\\)([\\S]+)\\s(.*)"; 	
+		String traceEntryPattern = "[\\*]?[><](.+)\\.(.+)\\((.+)?\\)([\\S]+)\\s(.*)"; 	
 		pat = Pattern.compile(timePattern+"\\s+"+threadIdPattern+"\\s+"+methodTraceIdPattern+"\\s+"+typePattern+"\\s+"+traceEntryPattern);
 		String methodName;
 		String className;
@@ -153,24 +153,28 @@ public class Parser{
 		String thisPointer;
 		//System.out.println(timePattern+"\\s+"+threadIdPattern+"\\s+"+methodTraceIdPattern+"\\s+"+typePattern+"\\s+"+traceEntryPattern);
 		boolean staticOrNot;	// Set True if method is static
-		Stack<Method> methods = new Stack<>();
+		HashMap<String, Stack<Method>> methodStack = new HashMap<>(); 
+		for(String th: activeThreads.keySet()){
+			methodStack.put(th, new Stack<Method>());
+		}
+		//Stack<Method> methods = new Stack<>();
 		Method method;
 		while(sc.hasNext()){
 			nextLine = sc.nextLine();
 			m = pat.matcher(nextLine);
 			if(m.matches()){
-				if(m.group(4).equals("Entry")){
-					startTime = m.group(1);
-					className = m.group(5);
-					threadId = m.group(2);
-					methodName = m.group(6);
-					parameters = getParameters(m.group(7));
-					returnType = getReturnType(m.group(8));
-					
+				startTime = m.group(1);
+				className = m.group(5);
+				threadId = m.group(2);
+				methodName = m.group(6);
+				parameters = getParameters(m.group(7));
+				returnType = getReturnType(m.group(8));
+				if(m.group(4).equals("Entry")){					
 					if(m.group(9).contains("static")){
 						staticOrNot = true;
 						method = new Method(methodName, className, threadId, startTime, staticOrNot, parameters, returnType);
-						methods.push(method);
+						//methods.push(method);
+						methodStack.get(method.getThreadId()).push(method);
 					}
 					else{
 						staticOrNot =false;
@@ -179,27 +183,42 @@ public class Parser{
 						if(m.matches()){
 							thisPointer = m.group(1);
 							method = new Method(methodName, className, threadId, startTime, staticOrNot, thisPointer, parameters, returnType);
-							methods.push(method);
+							methodStack.get(method.getThreadId()).push(method);
+							//methods.push(method);
 						}
 					}
 				}
-				else{
-					method = methods.pop();
+				else if(m.group(4).equals("Exit")){
+					method = methodStack.get(threadId).pop();
+					//method = methods.pop();
+					if(method.getMethodName().equals("runInfinite"))
+					{
+						System.out.println(m.group(1));
+					}
 					method.setEndTime(m.group(1)); 
 					activeThreads.get(m.group(2)).addMethod(method);
 				}
-			}
-			else{
-				break;
+				else{
+					System.out.println(nextLine);
+				}
 			}
 		}
 		// Check if stack is empty, if it is not empty that means some methods that started has not exited, Next line of codes
 		// handles that situation
-		if(!methods.empty()){
-			for(Method met: methods){
-				activeThreads.get(met.getThreadId()).addMethod(met);
+		for(Stack<Method> methStack: methodStack.values()){
+			if(!methStack.empty()){
+				for(Method met: methStack){
+					activeThreads.get(met.getThreadId()).addMethod(met);
+				}
 			}
 		}
+		/*
+		if(!methods.empty()){
+			for(Method met: methods){
+				System.out.println(met.getMethodName());
+				activeThreads.get(met.getThreadId()).addMethod(met);
+			}
+		}*/
 		// Calculate runtime of all the methods in all the thread
 		for(Threads th: activeThreads.values()){
 			for(Method met: th.getMethods()){

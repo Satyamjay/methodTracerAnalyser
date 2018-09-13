@@ -1,8 +1,6 @@
 package gui;
 
 import java.awt.BorderLayout;
-import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -10,12 +8,14 @@ import javax.swing.border.EmptyBorder;
 
 import java.awt.SystemColor;
 
-import org.jfree.chart.*;
-
 import parser.Parser;
 
 public class FrameForResult extends JFrame {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8048540120803646699L;
 	private JPanel contentPane;
 	/**
 	 * Create the frame.

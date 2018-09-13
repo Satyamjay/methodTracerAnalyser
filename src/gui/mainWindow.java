@@ -7,7 +7,6 @@ import parser.*;
 import javax.swing.JFrame;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-import javax.swing.JWindow;
 
 import java.awt.BorderLayout;
 import java.awt.Component;

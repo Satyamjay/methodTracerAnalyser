@@ -2,14 +2,10 @@ package gui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.Toolkit;
 
 import parser.Method;
 import parser.Parser;
 
-import java.awt.EventQueue;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -62,7 +58,6 @@ public class GraphViewer extends JFrame {
 				    Object[][] data = new Object[][] {{met.getMethodName(), met.getClass(), met.isStaticOrNot(), met.getStartTime(), met.getEndTime(), met.getRuntime(), met.getParameters(), met.getReturnType()}};
 			        JTable table = new JTable(data, columns);
 					JFrame frameForMethodInfo = new JFrame();
-					Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 					frameForMethodInfo.setPreferredSize(new Dimension(1000, 150));
 					frameForMethodInfo.add(new JScrollPane(table));
 			        frameForMethodInfo.setTitle("Table Example");
