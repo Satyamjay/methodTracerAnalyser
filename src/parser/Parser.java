@@ -19,6 +19,8 @@ import parser.Threads;
 
 import java.util.HashMap;
 
+import java.util.NoSuchElementException;
+
 /**
  ** @author satyam
  **
@@ -200,13 +202,20 @@ public class Parser{
 				// If the line does not match 'entry' or 'exit' then check for 'event'
 			}
 			else{
-				System.out.println(nextLine);
 				Matcher m2 = pat2.matcher(nextLine);
 				if(m2.matches()){
 					threadId = m2.group(2);
 					if(m2.group(4).equals("Event")){
-						method = methodStack.get(threadId).lastElement();
-						method.pushInMethodStack(m2.group(5));
+						if(m2.group(5).contains("jstacktrace:")){
+							continue;
+						}
+						try{
+							method = methodStack.get(threadId).lastElement();
+							method.pushInMethodStack(m2.group(5));
+						}
+						catch(NoSuchElementException ex){
+							continue;
+						}
 					}
 				}
 				else{
