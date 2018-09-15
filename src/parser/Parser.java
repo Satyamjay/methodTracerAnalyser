@@ -135,15 +135,21 @@ public class Parser{
 		}
 		String timePattern = "([0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{9})"; // group 1 :- Contains time in this format 19:04:24.092291382
 		String threadIdPattern = "[\\*]?(0x[a-fA-F0-9]+)";	// group 2 :- Contains threadID in this format *0x26e0500
-		String methodTraceIdPattern = "(mt\\.[0-9]+)"; 	// group 3 :- Contains trace id in this format mt.3
-		String typePattern = "(Entry|Exit)";	// group 4 :- Contains Entry or Exit
+		String methodTraceIdPattern = "(\\S+)"; 	// group 3 :- Contains trace id in this format mt.3
+		String typePattern = "(Entry|Exit|Event)";	// group 4 :- Contains Entry or Exit or Event(for stackTraf)
 		// group 5 :- java/util/Scanner  		(ClassName)
 		// group 6 :- <clinit>			 		(MethodName)
 		// group 7 :- (Ljava/lang/Readable;)	(Parameters)
 		// group 8 :- Ljava/util/Scanner;		(ReturnType)
 		// group 9 :- static method      		(Static or not)
-		String traceEntryPattern = "[\\*]?[><](.+)\\.(.+)\\((.+)?\\)([\\S]+)\\s(.*)"; 	
-		pat = Pattern.compile(timePattern+"\\s+"+threadIdPattern+"\\s+"+methodTraceIdPattern+"\\s+"+typePattern+"\\s+"+traceEntryPattern);
+		String traceEntryPattern1 = "[\\*]?[><](.+)\\.(.+)\\((.+)?\\)([\\S]+)\\s(.*)";
+		// Use this pattern when there is a stackTrace
+		// Example :- [1] sun.io.ByteToCharUTF8.flush (ByteToCharUTF8.java:149)
+		// group 5 :- If using this pattern
+		String traceEntryPattern2 = "(.+)"; // Trace Entry Pattern For StackTrace
+		
+		pat = Pattern.compile(timePattern+"\\s+"+threadIdPattern+"\\s+"+methodTraceIdPattern+"\\s+"+typePattern+"\\s+"+traceEntryPattern1);
+		Pattern pat2 = Pattern.compile(timePattern+"\\s+"+threadIdPattern+"\\s+"+methodTraceIdPattern+"\\s+"+typePattern+"\\s+"+traceEntryPattern2);
 		String methodName;
 		String className;
 		String threadId;
@@ -157,7 +163,6 @@ public class Parser{
 		for(String th: activeThreads.keySet()){
 			methodStack.put(th, new Stack<Method>());
 		}
-		//Stack<Method> methods = new Stack<>();
 		Method method;
 		while(sc.hasNext()){
 			nextLine = sc.nextLine();
@@ -173,7 +178,6 @@ public class Parser{
 					if(m.group(9).contains("static")){
 						staticOrNot = true;
 						method = new Method(methodName, className, threadId, startTime, staticOrNot, parameters, returnType);
-						//methods.push(method);
 						methodStack.get(method.getThreadId()).push(method);
 					}
 					else{
@@ -184,22 +188,26 @@ public class Parser{
 							thisPointer = m.group(1);
 							method = new Method(methodName, className, threadId, startTime, staticOrNot, thisPointer, parameters, returnType);
 							methodStack.get(method.getThreadId()).push(method);
-							//methods.push(method);
 						}
 					}
 				}
 				else if(m.group(4).equals("Exit")){
 					method = methodStack.get(threadId).pop();
-					//method = methods.pop();
-					if(method.getMethodName().equals("runInfinite"))
-					{
-						System.out.println(m.group(1));
-					}
 					method.setEndTime(m.group(1)); 
 					activeThreads.get(m.group(2)).addMethod(method);
 				}
+				// If the line does not match 'entry' or 'exit' then check for 'event'
 				else{
-					System.out.println(nextLine);
+					m = pat2.matcher(nextLine);
+					if(m.matches()){
+						if(m.group(4).equals("Event")){
+							method = methodStack.get(threadId).lastElement();
+							method.pushInMethodStack(m.group(5));
+						}
+					}
+					else{
+						System.out.println(nextLine);
+					}
 				}
 			}
 		}
@@ -212,13 +220,7 @@ public class Parser{
 				}
 			}
 		}
-		/*
-		if(!methods.empty()){
-			for(Method met: methods){
-				System.out.println(met.getMethodName());
-				activeThreads.get(met.getThreadId()).addMethod(met);
-			}
-		}*/
+		
 		// Calculate runtime of all the methods in all the thread
 		for(Threads th: activeThreads.values()){
 			for(Method met: th.getMethods()){
@@ -264,7 +266,6 @@ public class Parser{
 			}
 		}
 		return null;
-
 	}
 	
 	

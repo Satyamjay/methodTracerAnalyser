@@ -1,4 +1,6 @@
 package parser;
+import java.util.Stack;
+
 import parser.Parser;
 
 public class Method {
@@ -14,6 +16,7 @@ public class Method {
 	private String thisPointer;
 	private double runTime;
 	private int id;
+	private Stack<String> methodStack = new Stack<>();
 
 	
 	public Method(String mName, String cName, String tid, String sTime, boolean sOrNot, String[] params, String rType){
@@ -126,6 +129,14 @@ public class Method {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	public Stack<String> getMethodStack() {
+		return methodStack;
+	}
+	
+	public void pushInMethodStack(String s){
+		methodStack.push(s);
 	}
 	
 }
