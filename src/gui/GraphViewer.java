@@ -52,10 +52,10 @@ public class GraphViewer extends JFrame {
 				if(mat.matches()){
 					Method met = p.getMethodById(Integer.parseInt((mat.group(1))));
 					String[] columns = new String[]{
-				            "MethodName", "ClassName", "Static", "StartTime", "EndTime", "TotalRuntime", "Parameters", "ReturnType"
-				        };
+				            "MethodName", "ClassName", "Static", "StartTime", "EndTime", "TotalRuntime", "Parameters", "ReturnType", "StackTrace"
+					};
 				    //actual data for the table in a 2d array
-				    Object[][] data = new Object[][] {{met.getMethodName(), met.getClass(), met.isStaticOrNot(), met.getStartTime(), met.getEndTime(), met.getRuntime(), met.getParameters(), met.getReturnType()}};
+				    Object[][] data = new Object[][] {{met.getMethodName(), met.getClass(), met.isStaticOrNot(), met.getStartTime(), met.getEndTime(), met.getRuntime(), met.getParameters(), met.getReturnType(), met.getMethodStack()}};
 			        JTable table = new JTable(data, columns);
 					JFrame frameForMethodInfo = new JFrame();
 					frameForMethodInfo.setPreferredSize(new Dimension(1000, 150));

@@ -150,6 +150,7 @@ public class Parser{
 		
 		pat = Pattern.compile(timePattern+"\\s+"+threadIdPattern+"\\s+"+methodTraceIdPattern+"\\s+"+typePattern+"\\s+"+traceEntryPattern1);
 		Pattern pat2 = Pattern.compile(timePattern+"\\s+"+threadIdPattern+"\\s+"+methodTraceIdPattern+"\\s+"+typePattern+"\\s+"+traceEntryPattern2);
+		System.out.println(timePattern+"\\s+"+threadIdPattern+"\\s+"+methodTraceIdPattern+"\\s+"+typePattern+"\\s+"+traceEntryPattern2);
 		String methodName;
 		String className;
 		String threadId;
@@ -174,7 +175,7 @@ public class Parser{
 				methodName = m.group(6);
 				parameters = getParameters(m.group(7));
 				returnType = getReturnType(m.group(8));
-				if(m.group(4).equals("Entry")){					
+				if(m.group(4).equals("Entry")){
 					if(m.group(9).contains("static")){
 						staticOrNot = true;
 						method = new Method(methodName, className, threadId, startTime, staticOrNot, parameters, returnType);
@@ -197,17 +198,19 @@ public class Parser{
 					activeThreads.get(m.group(2)).addMethod(method);
 				}
 				// If the line does not match 'entry' or 'exit' then check for 'event'
+			}
+			else{
+				System.out.println(nextLine);
+				Matcher m2 = pat2.matcher(nextLine);
+				if(m2.matches()){
+					threadId = m2.group(2);
+					if(m2.group(4).equals("Event")){
+						method = methodStack.get(threadId).lastElement();
+						method.pushInMethodStack(m2.group(5));
+					}
+				}
 				else{
-					m = pat2.matcher(nextLine);
-					if(m.matches()){
-						if(m.group(4).equals("Event")){
-							method = methodStack.get(threadId).lastElement();
-							method.pushInMethodStack(m.group(5));
-						}
-					}
-					else{
-						System.out.println(nextLine);
-					}
+					System.out.println(nextLine);
 				}
 			}
 		}
