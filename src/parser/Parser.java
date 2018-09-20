@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.EmptyStackException;
 import java.util.List;
 import java.util.Stack;
 import java.util.Scanner;
@@ -18,7 +19,6 @@ import java.util.regex.Pattern;
 import parser.Threads;
 
 import java.util.HashMap;
-
 import java.util.NoSuchElementException;
 
 /**
@@ -195,9 +195,13 @@ public class Parser{
 					}
 				}
 				else if(m.group(4).equals("Exit")){
-					method = methodStack.get(threadId).pop();
-					method.setEndTime(m.group(1)); 
-					activeThreads.get(m.group(2)).addMethod(method);
+					try{
+						method = methodStack.get(threadId).pop();
+						method.setEndTime(m.group(1)); 
+						activeThreads.get(m.group(2)).addMethod(method);
+					}
+					catch(EmptyStackException ex){
+					}
 				}
 				// If the line does not match 'entry' or 'exit' then check for 'event'
 			}
