@@ -58,7 +58,7 @@ public class GraphViewer extends JFrame {
 				    //actual data for the table in a 2d array
 				    Object[][] data = new Object[][] {{met.getMethodName(), met.getClass(), met.isStaticOrNot(), met.getStartTime(), met.getEndTime(), met.getRuntime(), met.getParameters(), met.getReturnType(), met.getMethodStack()}};
 			        JTable table = new JTable(data, columns);
-			        table.setFont(new Font("Serif", Font.BOLD, 20));
+			        table.setFont(new Font("Serif", Font.PLAIN, 20));
 			        table.setRowHeight(40);
 					JFrame frameForMethodInfo = new JFrame();
 					frameForMethodInfo.setPreferredSize(new Dimension(1000, 150));

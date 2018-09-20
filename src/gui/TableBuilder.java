@@ -8,6 +8,7 @@ import javax.swing.JTable;
 import javax.swing.plaf.FontUIResource;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;	
+import javax.swing.table.TableColumnModel;
 
 import parser.Method;
 import parser.Parser;
@@ -22,11 +23,11 @@ public class TableBuilder {
 	  model.addColumn("<html><font size=8>"+"Runtime"+"</font></html>");
 	  model.addColumn("<html><font size=8>"+"Method"+"</font></html>");
 	  for(Method met: p.getIncompleteMethods()){
-		  model.addRow(new Object[] {"<html><font size=6>"+serialNo+"</font></html>", "<html><font size=6>"+String.valueOf(met.getRuntime())+"</font></html>","<html><font size=6>"+met.getMethodName()+"</font></html>"}); 
+		  model.addRow(new Object[] {serialNo, met.getRuntime(), met.getMethodName()}); 
 		  serialNo++;
 	  }
 	  for(Method met: p.sortByRuntime()){
-		  model.addRow(new Object[] {"<html><font size=6>"+serialNo+"</font></html>", "<html><font size=6>"+String.valueOf(met.getRuntime())+"</font></html>","<html><font size=6>"+met.getMethodName()+"</font></html>"}); 
+		  model.addRow(new Object[] {serialNo, met.getRuntime(), met.getMethodName()}); 
 		  serialNo++;
 	  }
 	  // To show the incomplete methods in red
@@ -35,17 +36,18 @@ public class TableBuilder {
           public Component getTableCellRendererComponent(JTable table,
                   Object value, boolean isSelected, boolean hasFocus, int row, int col) {
               super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col);
-              String status = (String) table.getModel().getValueAt(row, 1);
-              if (status == "-1") {
+              Double status = (Double) table.getModel().getValueAt(row, 1);
+              if (status == -1) {
                   setBackground(Color.RED);
                   setForeground(Color.WHITE);
               } else {
                   setBackground(table.getBackground());
                   setForeground(table.getForeground());
               }
-			return this;       
+			return this;	 
           }   
       });
+	  table.setFont(new Font("Serif", Font.PLAIN, 20));
 	  table.setRowHeight(40);
 }
 	
