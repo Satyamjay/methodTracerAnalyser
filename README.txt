@@ -1,1 +1,1 @@
-Hello World
+A program to view logs interactively.
