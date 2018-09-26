@@ -2,18 +2,29 @@ package gui;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.util.Stack;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.EventObject;
+import java.util.List;
 
+import javax.print.attribute.standard.JobMessageFromOperator;
+import javax.swing.CellEditor;
+import javax.swing.DefaultCellEditor;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
-import javax.swing.plaf.FontUIResource;
+import javax.swing.JTextField;
+import javax.swing.event.CellEditorListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;	
-import javax.swing.table.TableColumnModel;
+import javax.swing.table.TableCellRenderer;
 
 import parser.Method;
 import parser.Parser;
-import parser.Threads;
 public class TableBuilder {
 	//To create Table in the JFrame
 	DefaultTableModel model = new DefaultTableModel();
@@ -21,7 +32,7 @@ public class TableBuilder {
 	private int serialNo=1;
 	
 	@SuppressWarnings("serial")
-	public TableBuilder(Parser p){
+	public TableBuilder(final Parser p){
 	  model.addColumn("<html><font size=8>"+"SNo"+"</font></html>");					//Adding columns to the JTable
 	  model.addColumn("Runtime");
 	  model.addColumn("Method");
@@ -34,11 +45,11 @@ public class TableBuilder {
 	  model.addColumn("Stack Trace");
 	 
 	  for(Method met: p.getIncompleteMethods()){
-		  model.addRow(new Object[] {serialNo, met.getRuntime(),met.getMethodName(), met.getClass(), met.isStaticOrNot(), met.getStartTime(), met.getEndTime(), met.getParameters(), met.getReturnType(), met.getMethodStack()}); 
+		  model.addRow(new Object[] {serialNo, met.getRuntime(),met.getMethodName(), met.getClass(), met.isStaticOrNot(), met.getStartTime(), met.getEndTime(), met.getParameters(), met.getReturnType(), "Click to see stackTrace"}); 
 		  serialNo++;
 	  }
 	  for(Method met: p.sortByRuntime()){
-		  model.addRow(new Object[] {serialNo, met.getRuntime(),met.getMethodName(), met.getClass(), met.isStaticOrNot(), met.getStartTime(), met.getEndTime(), met.getParameters(), met.getReturnType(), met.getMethodStack()}); 
+		  model.addRow(new Object[] {serialNo, met.getRuntime(),met.getMethodName(), met.getClass(), met.isStaticOrNot(), met.getStartTime(), met.getEndTime(), met.getParameters(), met.getReturnType(), "Click to see stackTrace"}); 
 		  serialNo++;
 	  }
 	  table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer(){
@@ -59,11 +70,52 @@ public class TableBuilder {
       });
 	  table.setFont(new Font("Serif", Font.PLAIN, 20));
 	  table.setRowHeight(40);
-}
-	
-	
+	  table.getColumnModel().getColumn(9).setCellRenderer(new ButtonRenderer());
+	  table.addMouseListener(new java.awt.event.MouseAdapter() {
+		    @Override
+		    public void mouseClicked(java.awt.event.MouseEvent evt) {
+		        int row = table.rowAtPoint(evt.getPoint());
+		        int col = table.columnAtPoint(evt.getPoint());
+		        if (col==9) {
+		        	Method m = p.getMethodById(row);
+		        	System.out.println(m.getMethodStack());
+		        	JDialog d = new JDialog();
+		        	d.setSize(500, 1000);
+		            d.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		        	try{
+			        	List<String> methodStackList = new ArrayList<String>(m.getMethodStack());
+		        		d.setTitle(m.getMethodName()+" Stack Trace");
+			            DefaultTableModel model = new DefaultTableModel();
+			        	JTable t = new JTable(model);
+			      	    model.addColumn("<html><font size=8>"+"StackTrace"+"</font></html>");
+			      	    for(String method: methodStackList){
+			    		  model.addRow(new Object[] {method});
+			    	    }
+			            d.add(t);
+			            d.setVisible(true);
+		        	}
+		        	catch(NullPointerException ex){
+		        		d.add(new JLabel("StackTrace Not available for this method"));
+		        		d.setVisible(true);
+		        	}
+		        }
+		    }
+		});
+}	
 	public JTable getTable(){
 		return table;
 	}
+}
+
+class ButtonRenderer extends JButton implements TableCellRenderer{
 	
+	public ButtonRenderer() {
+		
+	}
+	@Override
+	public Component getTableCellRendererComponent(JTable table, Object value,
+			boolean isSelected, boolean hasFocus, int row, int column) {
+		setText((value==null) ? "":value.toString());
+		return this;
+	}
 }
