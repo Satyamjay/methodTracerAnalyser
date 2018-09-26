@@ -2,11 +2,8 @@ package gui;
 
 import java.awt.Color;
 import java.awt.Component;
-<<<<<<< HEAD
 import java.util.Stack;
-=======
 import java.awt.Font;
->>>>>>> fbe9da8fc9d02eadcac68f8fc2f8525a7f5f30ef
 
 import javax.swing.JTable;
 import javax.swing.plaf.FontUIResource;
