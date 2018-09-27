@@ -3,25 +3,14 @@ package gui;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.EventObject;
 import java.util.List;
 
-import javax.print.attribute.standard.JobMessageFromOperator;
-import javax.swing.CellEditor;
-import javax.swing.DefaultCellEditor;
-import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.event.CellEditorListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;	
-import javax.swing.table.TableCellRenderer;
 
 import parser.Method;
 import parser.Parser;
@@ -108,8 +97,7 @@ public class TableBuilder {
 	}
 }
 
-class ButtonRenderer extends JButton implements TableCellRenderer{
-	
+/*class ButtonRenderer extends JButton implements TableCellRenderer{
 	public ButtonRenderer() {
 		
 	}
@@ -119,4 +107,4 @@ class ButtonRenderer extends JButton implements TableCellRenderer{
 		setText((value==null) ? "":value.toString());
 		return this;
 	}
-}
+}*/

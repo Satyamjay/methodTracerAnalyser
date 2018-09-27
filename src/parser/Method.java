@@ -36,6 +36,17 @@ public class Method {
 		this(mName, cName, tid, sTime, sOrNot, params, rType);
 		this.thisPointer = tPointer;
 	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if (o instanceof Method){
+			Method m = (Method)o;
+			if(this.methodName==m.getMethodName() && this.parameters==m.getParameters() && this.className== m.getClassName()){
+				return true;
+			}
+		}
+		return false;
+	}
 
 
 	public String getClassName() {

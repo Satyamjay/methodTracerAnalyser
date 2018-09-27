@@ -1,20 +1,28 @@
 package gui;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 
 import parser.Method;
 import parser.Parser;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
 
 import org.jfree.chart.ChartMouseEvent;
 import org.jfree.chart.ChartMouseListener;
@@ -57,17 +65,46 @@ public class GraphViewer extends JFrame {
 					};
 				    //actual data for the table in a 2d array
 				    Object[][] data = new Object[][] {{met.getMethodName(), met.getClass(), met.isStaticOrNot(), met.getStartTime(), met.getEndTime(), met.getRuntime(), met.getParameters(), met.getReturnType(), met.getMethodStack()}};
-			        JTable table = new JTable(data, columns);
+			        final JTable table = new JTable(data, columns);
 			        table.setFont(new Font("Serif", Font.PLAIN, 20));
 			        table.setRowHeight(40);
+			  	    table.getColumnModel().getColumn(8).setCellRenderer(new ButtonRenderer());
+			  	    table.addMouseListener(new java.awt.event.MouseAdapter() {
+					    @Override
+					    public void mouseClicked(java.awt.event.MouseEvent evt) {
+					        int row = table.rowAtPoint(evt.getPoint());
+					        int col = table.columnAtPoint(evt.getPoint());
+					        if (col==8) {
+					        	Method m = p.getMethodById(row);
+					        	JDialog d = new JDialog();
+					        	d.setSize(500, 1000);
+					            d.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+					        	try{
+						        	List<String> methodStackList = new ArrayList<String>(m.getMethodStack());
+					        		d.setTitle(m.getMethodName()+" Stack Trace");
+						            DefaultTableModel model = new DefaultTableModel();
+						        	JTable t = new JTable(model);
+						      	    model.addColumn("<html><font size=8>"+"StackTrace"+"</font></html>");
+						      	    for(String method: methodStackList){
+						    		  model.addRow(new Object[] {method});
+						    	    }
+						            d.add(t);
+						            d.setVisible(true);
+					        	}
+					        	catch(NullPointerException ex){
+					        		d.add(new JLabel("StackTrace not available for this method in the log file"));
+					        		d.setVisible(true);
+					        	}
+					        }
+					    }
+					});
 					JFrame frameForMethodInfo = new JFrame();
 					frameForMethodInfo.setPreferredSize(new Dimension(1000, 150));
 					frameForMethodInfo.add(new JScrollPane(table));
 			        frameForMethodInfo.setTitle("Table Example");
 			        frameForMethodInfo.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);       
 			        frameForMethodInfo.pack();
-			        frameForMethodInfo.setVisible(true);
-			        
+			        frameForMethodInfo.setVisible(true);   
 				}
 			}
 		});
@@ -76,5 +113,16 @@ public class GraphViewer extends JFrame {
 		setContentPane(contentPane);
 		
 	}
+}
 
+class ButtonRenderer extends JButton implements TableCellRenderer{
+	public ButtonRenderer() {
+		
+	}
+	@Override
+	public Component getTableCellRendererComponent(JTable table, Object value,
+			boolean isSelected, boolean hasFocus, int row, int column) {
+		setText((value==null) ? "":value.toString());
+		return this;
+	}
 }

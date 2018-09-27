@@ -3,7 +3,6 @@ package gui;
 import java.awt.EventQueue;
 
 import parser.*;
-
 import javax.swing.JFrame;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -68,6 +67,7 @@ public class mainWindow {
 							int returnVal2 = jfc2.showOpenDialog(frame);
 							if(returnVal2 == JFileChooser.APPROVE_OPTION){
 								Parser p2 = new Parser(jfc2.getSelectedFile());
+								new LogComparator(p1, p2);
 							}
 						}
 						else{

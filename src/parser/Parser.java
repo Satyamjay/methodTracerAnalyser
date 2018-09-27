@@ -270,6 +270,14 @@ public class Parser{
 	public HashMap<String, Threads> getActiveThreads(){
 		return activeThreads;
 	}
+	public List<Method> getAllMethods(){
+		List<Method> allMethods = new ArrayList<>(); 
+		for(Threads th: activeThreads.values()){
+			allMethods.addAll(th.getMethods());
+		}
+		return allMethods;
+	}
+	
 	public double getTraceTime(){
 		return traceTime;
 	}
