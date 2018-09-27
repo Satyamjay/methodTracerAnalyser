@@ -78,12 +78,12 @@ public class TableBuilder {
 		        int col = table.columnAtPoint(evt.getPoint());
 		        if (col==9) {
 		        	Method m = p.getMethodById(row);
-		        	System.out.println(m.getMethodStack());
 		        	JDialog d = new JDialog();
 		        	d.setSize(500, 1000);
 		            d.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		        	try{
 			        	List<String> methodStackList = new ArrayList<String>(m.getMethodStack());
+		        		System.out.println(m.getMethodStack());
 		        		d.setTitle(m.getMethodName()+" Stack Trace");
 			            DefaultTableModel model = new DefaultTableModel();
 			        	JTable t = new JTable(model);
@@ -95,7 +95,8 @@ public class TableBuilder {
 			            d.setVisible(true);
 		        	}
 		        	catch(NullPointerException ex){
-		        		d.add(new JLabel("StackTrace Not available for this method"));
+		        		System.out.println("Here");
+		        		d.add(new JLabel("StackTrace not available for this method in the log file"));
 		        		d.setVisible(true);
 		        	}
 		        }
