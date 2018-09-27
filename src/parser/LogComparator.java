@@ -27,7 +27,7 @@ public class LogComparator {
 		for(Method mt:criticalMethodsInP1){
 			for(Method met:p2.getAllMethods()){
 				if(met.equals(mt)){
-					System.out.println(met.getMethodName());
+					System.out.println("Matched");
 				}
 			}
 		}

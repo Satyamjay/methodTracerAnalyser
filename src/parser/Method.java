@@ -1,5 +1,6 @@
 package parser;
 import java.util.Stack;
+import java.util.Arrays;
 
 import parser.Parser;
 
@@ -41,7 +42,7 @@ public class Method {
 	public boolean equals(Object o) {
 		if (o instanceof Method){
 			Method m = (Method)o;
-			if(this.methodName==m.getMethodName() && this.parameters==m.getParameters() && this.className== m.getClassName()){
+			if(this.methodName.equals(m.getMethodName()) && Arrays.equals(this.parameters, m.getParameters()) && this.className.equals(m.getClassName())){
 				return true;
 			}
 		}
