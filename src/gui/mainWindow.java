@@ -67,21 +67,13 @@ public class mainWindow {
 							int returnVal2 = jfc2.showOpenDialog(frame);
 							if(returnVal2 == JFileChooser.APPROVE_OPTION){
 								Parser p2 = new Parser(jfc2.getSelectedFile());
+								showTable(p1);
+								showTable(p2);
 								new LogComparator(p1, p2);
 							}
 						}
 						else{
-							final FrameForResult frameForResult = new FrameForResult(p1);
-							final GraphViewer graphViewer = new GraphViewer(p1);
-							frame.setVisible(false);
-							frameForResult.setVisible(true);
-							graphViewer.setVisible(true);
-							frameForResult.addWindowListener(new java.awt.event.WindowAdapter(){
-								@Override
-								public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-									frame.setVisible(true);
-									frameForResult.dispose();							};
-							});
+							showTable(p1);
 						}
 					}
 				}
@@ -91,6 +83,14 @@ public class mainWindow {
 			}
 		});
 		frame.getContentPane().add(btnFileselect, BorderLayout.NORTH);
+	}
+	private void showTable(Parser p){
+		final FrameForResult frameForResult = new FrameForResult(p);
+		final GraphViewer graphViewer = new GraphViewer(p);
+		graphViewer.setDefaultCloseOperation(GraphViewer.DISPOSE_ON_CLOSE);
+		frameForResult.setDefaultCloseOperation(FrameForResult.DISPOSE_ON_CLOSE);
+		frameForResult.setVisible(true);
+		graphViewer.setVisible(true);
 	}
 
 }
