@@ -1,1 +1,1 @@
-A program to view logs interactively.
+A Program to view logs interactively.
