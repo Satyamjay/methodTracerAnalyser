@@ -6,6 +6,8 @@ import java.util.List;
 public class LogComparator {
 	List<Method> criticalMethodsInP1;
 	List<Method> criticalMethodsInP2;
+	List<CommonMethods> commonCriticalMethodsInP1 = new ArrayList<>();
+	List<CommonMethods> commonCriticalMethodsInP2 = new ArrayList<>();
 
 	public LogComparator(Parser p1, Parser p2) {
 		criticalMethodsInP1 = new ArrayList<>();
@@ -27,13 +29,23 @@ public class LogComparator {
 		for(Method mt:criticalMethodsInP1){
 			for(Method met:p2.getAllMethods()){
 				if(met.equals(mt)){
-					System.out.println("Matched");
+					commonCriticalMethodsInP1.add(new CommonMethods(met.getMethodName(), met.getClassName(), met.isStaticOrNot(), met.getParameters(), met.getReturnType(), met.getRuntime(), mt.getRuntime(), met.getMethodStack(), mt.getMethodStack()));
 				}
 			}
 		}
-		
-		
-		
+		for(Method mt:criticalMethodsInP2){
+			for(Method met:p1.getAllMethods()){
+				if(met.equals(mt)){
+					commonCriticalMethodsInP2.add(new CommonMethods(met.getMethodName(), met.getClassName(), met.isStaticOrNot(), met.getParameters(), met.getReturnType(), met.getRuntime(), mt.getRuntime(), met.getMethodStack(), mt.getMethodStack()));
+				}
+			}
+		}	}
+	
+	public List<CommonMethods>[] getCommonCriticalMethods(){
+		List<CommonMethods>[] commonCriticalMethods = new List[2];
+		commonCriticalMethods[0] = commonCriticalMethodsInP1;
+		commonCriticalMethods[1] = commonCriticalMethodsInP2;
+		return commonCriticalMethods;
 	}
 
 }

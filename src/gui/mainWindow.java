@@ -3,18 +3,26 @@ package gui;
 import java.awt.EventQueue;
 
 import parser.*;
+
+import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Container;
 
 import javax.swing.JButton;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.List;
+
 import gui.FrameForResult;
+import gui.TableForComparision;
+
 public class mainWindow {
 
 	private JFrame frame;
@@ -69,7 +77,7 @@ public class mainWindow {
 								Parser p2 = new Parser(jfc2.getSelectedFile());
 								showTable(p1);
 								showTable(p2);
-								new LogComparator(p1, p2);
+								showComparisionTable(new LogComparator(p1, p2));
 							}
 						}
 						else{
@@ -91,6 +99,23 @@ public class mainWindow {
 		frameForResult.setDefaultCloseOperation(FrameForResult.DISPOSE_ON_CLOSE);
 		frameForResult.setVisible(true);
 		graphViewer.setVisible(true);
+	}
+	private void showComparisionTable(LogComparator lc){
+		List<CommonMethods>[] cm = lc.getCommonCriticalMethods();
+		JTable[] tables = new TableForComparision(cm).createTablesForComparision();
+		JTable table1 = tables[0];
+		JTable table2 = tables[1];
+		JFrame frame = new JFrame();
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		Container c = frame.getContentPane();
+		c.setLayout(new BoxLayout(c, BoxLayout.Y_AXIS));;
+		c.add(table1.getTableHeader());
+		c.add(table1);
+		c.add(table2.getTableHeader());
+		c.add(table2);
+		frame.pack();
+		frame.setVisible(true);
+		
 	}
 
 }
