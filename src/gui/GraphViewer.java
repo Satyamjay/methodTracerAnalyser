@@ -88,6 +88,7 @@ public class GraphViewer extends JFrame {
 						      	    for(String method: methodStackList){
 						    		  model.addRow(new Object[] {method});
 						    	    }
+						      	    d.setTitle("StackTrace For "+m.getMethodName());
 						            d.add(t);
 						            d.setVisible(true);
 					        	}
@@ -101,7 +102,7 @@ public class GraphViewer extends JFrame {
 					JFrame frameForMethodInfo = new JFrame();
 					frameForMethodInfo.setPreferredSize(new Dimension(1000, 150));
 					frameForMethodInfo.add(new JScrollPane(table));
-			        frameForMethodInfo.setTitle("Table Example");
+			        frameForMethodInfo.setTitle(met.getMethodName());
 			        frameForMethodInfo.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);       
 			        frameForMethodInfo.pack();
 			        frameForMethodInfo.setVisible(true);   
