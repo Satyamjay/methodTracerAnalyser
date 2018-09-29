@@ -34,6 +34,7 @@ public class mainWindow {
 	private JFrame frame;
 	private Parser p1;
 	private Parser p2;
+	private LogComparator logComparator;
 
 	
 
@@ -87,7 +88,8 @@ public class mainWindow {
 								parseWithProgressBar(jfc2.getSelectedFile(), 2);
 								showTable(p1, jfc1.getSelectedFile().getName());
 								showTable(p2, jfc2.getSelectedFile().getName());
-								showComparisionTable(new LogComparator(p1, p2));
+								compareWithProgressBar(p1, p2);
+								showComparisionTable(logComparator);
 							}
 						}
 						else{
@@ -131,12 +133,12 @@ public class mainWindow {
 		
 	}
 	private void parseWithProgressBar(final File f, final int parserNo) throws InvalidLogFileException{
-		final JDialog dialog = new JDialog(frame, true); // modal
+		final JDialog dialog = new JDialog(frame, true);
 		dialog.setUndecorated(true);
 		JProgressBar bar = new JProgressBar();
 		bar.setIndeterminate(true);
 		bar.setStringPainted(true);
-		bar.setString("Please wait");
+		bar.setString("Parsing "+f.getName());
 		dialog.add(bar);
 		dialog.pack();
 		SwingWorker<Parser, Void> worker = new SwingWorker<Parser, Void>(){
@@ -164,6 +166,37 @@ public class mainWindow {
 			};
 		worker.execute();
 		dialog.setVisible(true);		
+	}
+	
+	private void compareWithProgressBar(final Parser p1, final Parser p2){
+		final JDialog dialog = new JDialog(frame, true);
+		dialog.setUndecorated(true);
+		JProgressBar bar = new JProgressBar();
+		bar.setIndeterminate(true);
+		bar.setStringPainted(true);
+		bar.setString("Now Comparing");
+		dialog.add(bar);
+		dialog.pack();
+		SwingWorker<LogComparator, Void> worker = new SwingWorker<LogComparator, Void>(){
+
+			@Override
+			protected LogComparator doInBackground() throws Exception {
+				LogComparator lc = new LogComparator(p1, p2);
+				return lc;
+			}
+			@Override
+			protected void done(){
+				try {
+					logComparator = get();				
+				} catch (InterruptedException
+						| ExecutionException e) {
+					e.printStackTrace();
+				}
+			    dialog.dispose();
+			}
+			};
+		worker.execute();
+		dialog.setVisible(true);	
 	}
 
 }

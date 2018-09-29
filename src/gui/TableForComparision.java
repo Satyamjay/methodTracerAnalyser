@@ -4,11 +4,14 @@ import java.awt.Font;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 
 import parser.CommonMethods;
+import parser.Method;
 
 
 public class TableForComparision {
@@ -40,6 +43,60 @@ public class TableForComparision {
 		table1.setRowHeight(40);
 		table1.getColumnModel().getColumn(7).setCellRenderer(new ButtonRenderer());
 		table1.getColumnModel().getColumn(8).setCellRenderer(new ButtonRenderer());
+		table1.addMouseListener(new java.awt.event.MouseAdapter() {
+		    @Override
+		    public void mouseClicked(java.awt.event.MouseEvent evt) {
+		        int row = table1.rowAtPoint(evt.getPoint());
+		        int col = table1.columnAtPoint(evt.getPoint());
+		        if (col==7) {
+		        	CommonMethods cm = commonCriticalMethodsinP1.get(row); 
+		        	JDialog d = new JDialog();
+		        	d.setSize(500, 1000);
+		            d.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		        	try{
+			        	List<String> methodStackList = new ArrayList<String>(cm.getMethodStack1());
+		        		d.setTitle(cm.getMethodName()+" Stack Trace");
+			            DefaultTableModel model = new DefaultTableModel();
+			        	JTable t = new JTable(model);
+			      	    model.addColumn("<html><font size=8>"+"StackTrace"+"</font></html>");
+			      	    for(String method: methodStackList){
+			    		  model.addRow(new Object[] {method});
+			    	    }
+			            d.add(t);
+			            d.setVisible(true);
+		        	}
+		        	catch(NullPointerException ex){
+		        		System.out.println("Here");
+		        		d.add(new JLabel("StackTrace not available for this method in the log file"));
+		        		d.setVisible(true);
+		        	}
+		        }
+		        if (col==8) {
+		        	CommonMethods cm = commonCriticalMethodsinP1.get(row); 
+		        	JDialog d = new JDialog();
+		        	d.setSize(500, 1000);
+		            d.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		        	try{
+			        	List<String> methodStackList = new ArrayList<String>(cm.getMethodStack2());
+		        		d.setTitle(cm.getMethodName()+" Stack Trace");
+			            DefaultTableModel model = new DefaultTableModel();
+			        	JTable t = new JTable(model);
+			      	    model.addColumn("<html><font size=8>"+"StackTrace"+"</font></html>");
+			      	    for(String method: methodStackList){
+			    		  model.addRow(new Object[] {method});
+			    	    }
+			            d.add(t);
+			            d.setVisible(true);
+		        	}
+		        	catch(NullPointerException ex){
+		        		System.out.println("Here");
+		        		d.add(new JLabel("StackTrace not available for this method in the log file"));
+		        		d.setVisible(true);
+		        	}
+		        }
+		    }
+		});
+		
 		// For Table 2
 		DefaultTableModel model2 = new DefaultTableModel();
 		final JTable table2 = new JTable(model2);
@@ -59,6 +116,59 @@ public class TableForComparision {
 		table2.setRowHeight(40);
 		table2.getColumnModel().getColumn(7).setCellRenderer(new ButtonRenderer());
 		table2.getColumnModel().getColumn(8).setCellRenderer(new ButtonRenderer());
+		table2.addMouseListener(new java.awt.event.MouseAdapter() {
+		    @Override
+		    public void mouseClicked(java.awt.event.MouseEvent evt) {
+		        int row = table2.rowAtPoint(evt.getPoint());
+		        int col = table2.columnAtPoint(evt.getPoint());
+		        if (col==7) {
+		        	CommonMethods cm = commonCriticalMethodsinP2.get(row); 
+		        	JDialog d = new JDialog();
+		        	d.setSize(500, 1000);
+		            d.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		        	try{
+			        	List<String> methodStackList = new ArrayList<String>(cm.getMethodStack1());
+		        		d.setTitle(cm.getMethodName()+" Stack Trace");
+			            DefaultTableModel model = new DefaultTableModel();
+			        	JTable t = new JTable(model);
+			      	    model.addColumn("<html><font size=8>"+"StackTrace"+"</font></html>");
+			      	    for(String method: methodStackList){
+			    		  model.addRow(new Object[] {method});
+			    	    }
+			            d.add(t);
+			            d.setVisible(true);
+		        	}
+		        	catch(NullPointerException ex){
+		        		System.out.println("Here");
+		        		d.add(new JLabel("StackTrace not available for this method in the log file"));
+		        		d.setVisible(true);
+		        	}
+		        }
+		        if (col==8) {
+		        	CommonMethods cm = commonCriticalMethodsinP2.get(row); 
+		        	JDialog d = new JDialog();
+		        	d.setSize(500, 1000);
+		            d.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		        	try{
+			        	List<String> methodStackList = new ArrayList<String>(cm.getMethodStack2());
+		        		d.setTitle(cm.getMethodName()+" Stack Trace");
+			            DefaultTableModel model = new DefaultTableModel();
+			        	JTable t = new JTable(model);
+			      	    model.addColumn("<html><font size=8>"+"StackTrace"+"</font></html>");
+			      	    for(String method: methodStackList){
+			    		  model.addRow(new Object[] {method});
+			    	    }
+			            d.add(t);
+			            d.setVisible(true);
+		        	}
+		        	catch(NullPointerException ex){
+		        		System.out.println("Here");
+		        		d.add(new JLabel("StackTrace not available for this method in the log file"));
+		        		d.setVisible(true);
+		        	}
+		        }
+		    }
+		});
 		
 		
 		JTable[] tables = {table1, table2};
