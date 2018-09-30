@@ -109,7 +109,7 @@ public class mainWindow {
 		final GraphViewer graphViewer = new GraphViewer(p);
 		graphViewer.setDefaultCloseOperation(GraphViewer.DISPOSE_ON_CLOSE);
 		frameForResult.setDefaultCloseOperation(FrameForResult.DISPOSE_ON_CLOSE);
-		frameForResult.setTitle(fileName);
+		frameForResult.setTitle(fileName+ " Total Tracetime:"+p.getTraceTime());
 		graphViewer.setTitle("Graph For "+fileName);
 		frameForResult.setVisible(true);
 		graphViewer.setVisible(true);
