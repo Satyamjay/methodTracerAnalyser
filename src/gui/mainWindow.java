@@ -135,6 +135,7 @@ public class mainWindow {
 	private void parseWithProgressBar(final File f, final int parserNo) throws InvalidLogFileException{
 		final JDialog dialog = new JDialog(frame, true);
 		dialog.setUndecorated(true);
+		dialog.setLocationRelativeTo(null);
 		JProgressBar bar = new JProgressBar();
 		bar.setIndeterminate(true);
 		bar.setStringPainted(true);
@@ -170,6 +171,7 @@ public class mainWindow {
 	
 	private void compareWithProgressBar(final Parser p1, final Parser p2){
 		final JDialog dialog = new JDialog(frame, true);
+		dialog.setLocationRelativeTo(null);
 		dialog.setUndecorated(true);
 		JProgressBar bar = new JProgressBar();
 		bar.setIndeterminate(true);

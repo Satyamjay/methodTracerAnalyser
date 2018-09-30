@@ -39,7 +39,6 @@ public class Parser{
 			activeThreads = getThreadInfo(sc);			// First scan for thread names
 			traceTime = getTraceTime(sc);				// Then pass the scanner object to find the time
 			scanMethods(sc);							// Then pass the scanner object to scan the methods
-			System.out.println(traceTime);
 		}
 		catch(IOException e){
 			System.out.println("File Not Found");
@@ -152,7 +151,6 @@ public class Parser{
 		
 		pat = Pattern.compile(timePattern+"\\s+"+threadIdPattern+"\\s+"+methodTraceIdPattern+"\\s+"+typePattern+"\\s+"+traceEntryPattern1);
 		Pattern pat2 = Pattern.compile(timePattern+"\\s+"+threadIdPattern+"\\s+"+methodTraceIdPattern+"\\s+"+typePattern+"\\s+"+traceEntryPattern2);
-		System.out.println(timePattern+"\\s+"+threadIdPattern+"\\s+"+methodTraceIdPattern+"\\s+"+typePattern+"\\s+"+traceEntryPattern2);
 		String methodName;
 		String className;
 		String threadId;
@@ -223,7 +221,7 @@ public class Parser{
 					}
 				}
 				else{
-					System.out.println(nextLine);
+					continue;
 				}
 			}
 		}
