@@ -14,8 +14,8 @@ Some of the trace files are included but those files do not contain stacktrace a
 Performs two basic tasks:-
 1. Parses the trace file then shows the table and a chart.
 2. If user wants allow him/her to compare the trace with another trace file.
-<img src="https://github.com/Satyamjay/methodTracerAnalyser/blob/master/FlowCharts/flowChart.PNG" width="50%"/>
-<img src="https://github.com/Satyamjay/methodTracerAnalyser/blob/master/FlowCharts/flowChartForComparision.PNG" width="50%"/>
+<img src="https://github.com/Satyamjay/methodTracerAnalyser/blob/master/FlowCharts/flowChart.PNG" width="100%"/>
+<img src="https://github.com/Satyamjay/methodTracerAnalyser/blob/master/FlowCharts/flowChartForComparision.PNG" width="100%"/>
 
 ## Acknowledgment
 
