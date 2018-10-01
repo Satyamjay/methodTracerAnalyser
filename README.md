@@ -16,6 +16,7 @@ Performs two basic tasks:-
 2. If user wants allow him/her to compare the trace with another trace file.
 #### FlowChart
 <img src="https://github.com/Satyamjay/methodTracerAnalyser/blob/master/FlowCharts/flowChart.PNG" width="100%"/>
+
 #### FlowChart for comparision
 <img src="https://github.com/Satyamjay/methodTracerAnalyser/blob/master/FlowCharts/flowChartForComparision.PNG" width="100%"/>
 
