@@ -10,6 +10,7 @@ import java.awt.SystemColor;
 
 import parser.Parser;
 
+// This frame show the main table using table builder
 public class FrameForResult extends JFrame {
 
 	/**

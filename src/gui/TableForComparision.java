@@ -13,18 +13,18 @@ import javax.swing.table.JTableHeader;
 import parser.CommonMethods;
 import parser.Method;
 
-
+// Class that creates and return the two tables comparing the methods in the of two log files
 public class TableForComparision {
 	private List<CommonMethods> commonCriticalMethodsinP1 = new ArrayList<>();
 	private List<CommonMethods> commonCriticalMethodsinP2 = new ArrayList<>();
 	
 	public TableForComparision(List<CommonMethods>[] commonCriticalMethods) {
-		commonCriticalMethodsinP1 = commonCriticalMethods[0];
+		commonCriticalMethodsinP1 = commonCriticalMethods[0];					// Get the critical methods that are to be shown
 		commonCriticalMethodsinP2 = commonCriticalMethods[1];
 	}
 	
 	public JTable[] createTablesForComparision(){
-		// For Table 1
+		///////////////////////////////////////////////// For Table 1  //////////////////////////////////////////////////////////////
 		DefaultTableModel model1 = new DefaultTableModel();
 		final JTable table1 = new JTable(model1);
 	    model1.addColumn("Method");
@@ -97,7 +97,9 @@ public class TableForComparision {
 		    }
 		});
 		
-		// For Table 2
+		
+		
+		//////////////////////////////////////////////////// For Table 2   /////////////////////////////////////////////////////////
 		DefaultTableModel model2 = new DefaultTableModel();
 		final JTable table2 = new JTable(model2);
 	    model2.addColumn("Method");

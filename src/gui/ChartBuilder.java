@@ -14,6 +14,8 @@ import org.jfree.data.category.DefaultCategoryDataset;
 
 import parser.Method;
 import parser.Parser;
+
+// This class creates the chart to be shown on the GraphViewerFrame
 public class ChartBuilder {
 	private JFreeChart chart;
 	public ChartBuilder(Parser p){

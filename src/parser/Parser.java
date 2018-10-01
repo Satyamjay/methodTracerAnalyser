@@ -32,6 +32,7 @@ public class Parser{
 	private HashMap<String, Threads> activeThreads;
 	// Contains start-time and end-time of the trace
 	private double traceTime; // in seconds 
+	
 	public Parser(File fileName) throws InvalidLogFileException{
 		Scanner sc = null;
 		try{
@@ -242,8 +243,9 @@ public class Parser{
 			}
 		}
 	}
-
-	public String[] getParameters(String s){
+	
+	// -----------------------------------------------------Helper Methods for scanMethos-------------------------------------------------------------------------------------
+	private String[] getParameters(String s){
 		String[] params = {"void"};
 		if(!(s == null)){
 			params = s.split(";");
@@ -264,10 +266,13 @@ public class Parser{
 		}
 		return "void";
 	}
+	// ----------------------------------------------------------------------------------------------------------------------------------------------------------
 	
 	public HashMap<String, Threads> getActiveThreads(){
 		return activeThreads;
 	}
+	
+	// Get all the methods of all the threads
 	public List<Method> getAllMethods(){
 		List<Method> allMethods = new ArrayList<>(); 
 		for(Threads th: activeThreads.values()){
@@ -279,6 +284,7 @@ public class Parser{
 	public double getTraceTime(){
 		return traceTime;
 	}
+	
 	public Method getMethodById(int id){
 		for(Threads th: activeThreads.values()){
 			for(Method met: th.getMethods()){
@@ -318,7 +324,7 @@ public class Parser{
 			return (ArrayList<Method>) methods;
 		}
 			
-	// Comparator to sort
+	// Comparator used for sorting
 	static class CustomComparator implements Comparator<Method> {
 	    @Override
 	    public int compare(Method m1, Method m2) {

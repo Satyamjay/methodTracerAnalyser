@@ -28,7 +28,9 @@ import org.jfree.chart.ChartMouseEvent;
 import org.jfree.chart.ChartMouseListener;
 import org.jfree.chart.ChartPanel;
 
-public class GraphViewer extends JFrame {
+
+// This jFrame is used to show the graphs using the ChartBuilder class
+public class FrameForChart extends JFrame {
 
 	/**
 	 * 
@@ -38,7 +40,7 @@ public class GraphViewer extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public GraphViewer(final Parser p) {
+	public FrameForChart(final Parser p) {
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(300, 100, 450, 300);
 		contentPane = new JPanel();
@@ -116,6 +118,7 @@ public class GraphViewer extends JFrame {
 	}
 }
 
+// Class used to render the button in the jtable
 class ButtonRenderer extends JButton implements TableCellRenderer{
 	public ButtonRenderer() {
 		

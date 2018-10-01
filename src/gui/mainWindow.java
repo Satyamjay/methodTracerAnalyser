@@ -43,8 +43,6 @@ public class mainWindow {
 	 * Launch the application.
 	 **/
 	public static void main(String[] args) {
-		//File fileName = new File("demoLogs/demoMultiThread.log");
-		//Parser p = new Parser(fileName);
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -80,21 +78,22 @@ public class mainWindow {
 					final JFileChooser jfc1 = new JFileChooser();
 					int returnVal1 = jfc1.showOpenDialog(frame);
 					if(returnVal1 == JFileChooser.APPROVE_OPTION) {
+						// Parses the file and instantiates the p1 object(because 1 is passed)
 						parseWithProgressBar(jfc1.getSelectedFile(), 1);
+						showTableAndGraph(p1, jfc1.getSelectedFile().getName());
+						// Ask if want to compare
 						int result = JOptionPane.showConfirmDialog((Component) null, "Wanna Compare with another log?","alert", JOptionPane.YES_NO_OPTION);
 						if( result == JOptionPane.YES_OPTION){
 							JFileChooser jfc2 = new JFileChooser();
 							int returnVal2 = jfc2.showOpenDialog(frame);
 							if(returnVal2 == JFileChooser.APPROVE_OPTION){
+								// If chooses to compare parse the second file first, and then show the Table and graph
 								parseWithProgressBar(jfc2.getSelectedFile(), 2);
-								showTable(p1, jfc1.getSelectedFile().getName());
-								showTable(p2, jfc2.getSelectedFile().getName());
+								showTableAndGraph(p2, jfc2.getSelectedFile().getName());
+								// Then Compare them and show the comparison tables
 								compareWithProgressBar(p1, p2);
 								showComparisionTable(logComparator);
 							}
-						}
-						else{
-							showTable(p1, jfc1.getSelectedFile().getName());
 						}
 					}
 				}
@@ -105,16 +104,19 @@ public class mainWindow {
 		});
 		frame.getContentPane().add(btnFileselect, BorderLayout.NORTH);
 	}
-	private void showTable(Parser p, String fileName){
+	
+	// Takes the parser and displays the table and graph using the FrameForTable and GraphViewer classes 
+	private void showTableAndGraph(Parser p, String fileName){
 		final FrameForResult frameForResult = new FrameForResult(p);
-		final GraphViewer graphViewer = new GraphViewer(p);
-		graphViewer.setDefaultCloseOperation(GraphViewer.DISPOSE_ON_CLOSE);
+		final FrameForChart graphViewer = new FrameForChart(p);
+		graphViewer.setDefaultCloseOperation(FrameForChart.DISPOSE_ON_CLOSE);
 		frameForResult.setDefaultCloseOperation(FrameForResult.DISPOSE_ON_CLOSE);
 		frameForResult.setTitle(fileName+ " Total Tracetime:"+p.getTraceTime());
 		graphViewer.setTitle("Graph For "+fileName);
 		frameForResult.setVisible(true);
 		graphViewer.setVisible(true);
 	}
+	// Takes the LogComparator and displays the table using TableForComparision Class 
 	private void showComparisionTable(LogComparator lc){
 		List<CommonMethods>[] cm = lc.getCommonCriticalMethods();
 		JTable[] tables = new TableForComparision(cm).createTablesForComparision();
@@ -133,6 +135,8 @@ public class mainWindow {
 		frame.setVisible(true);
 		
 	}
+	
+	// Used to display Progress while parsing
 	private void parseWithProgressBar(final File f, final int parserNo) throws InvalidLogFileException{
 		final JDialog dialog = new JDialog(frame, true);
 		dialog.setUndecorated(true);
@@ -140,7 +144,7 @@ public class mainWindow {
 		JProgressBar bar = new JProgressBar();
 		bar.setIndeterminate(true);
 		bar.setStringPainted(true);
-		bar.setString("Parsing "+f.getName());
+		bar.setString("    Parsing "+f.getName()+"   ");
 		dialog.add(bar);
 		dialog.pack();
 		SwingWorker<Parser, Void> worker = new SwingWorker<Parser, Void>(){
@@ -170,6 +174,7 @@ public class mainWindow {
 		dialog.setVisible(true);		
 	}
 	
+	// Used to display Progress while comparing
 	private void compareWithProgressBar(final Parser p1, final Parser p2){
 		final JDialog dialog = new JDialog(frame, true);
 		dialog.setLocationRelativeTo(null);
@@ -177,7 +182,7 @@ public class mainWindow {
 		JProgressBar bar = new JProgressBar();
 		bar.setIndeterminate(true);
 		bar.setStringPainted(true);
-		bar.setString("Now Comparing");
+		bar.setString("    Now Comparing    ");
 		dialog.add(bar);
 		dialog.pack();
 		SwingWorker<LogComparator, Void> worker = new SwingWorker<LogComparator, Void>(){

@@ -2,6 +2,9 @@ package parser;
 
 import java.util.Stack;
 
+
+// Class used to store information about the methods that are common in both the logFiles
+
 public class CommonMethods{
 	private String methodName;
 	private String className;

@@ -4,6 +4,8 @@ import java.util.Arrays;
 
 import parser.Parser;
 
+
+// Class to store information about Methods
 public class Method {
 	private static int numberOfMethods = 1;
 	private String methodName;

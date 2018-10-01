@@ -14,6 +14,10 @@ import javax.swing.table.DefaultTableModel;
 
 import parser.Method;
 import parser.Parser;
+
+
+// Class to create the table(the main table) using the parser object and then send it for display 
+
 public class TableBuilder {
 	//To create Table in the JFrame
 	DefaultTableModel model = new DefaultTableModel();
@@ -23,15 +27,15 @@ public class TableBuilder {
 	@SuppressWarnings("serial")
 	public TableBuilder(final Parser p){
 	  model.addColumn("<html><font size=8>"+"SNo"+"</font></html>");					//Adding columns to the JTable
-	  model.addColumn("Runtime");
-	  model.addColumn("Method");
-	  model.addColumn("Class Name");
-	  model.addColumn("Static Or Not");
-	  model.addColumn("Start Time");
-	  model.addColumn("End Time");
-	  model.addColumn("Parameter");
-	  model.addColumn("Return Type");
-	  model.addColumn("Stack Trace");
+	  model.addColumn("<html><font size=8>"+"Runtime"+"</font></html>");
+	  model.addColumn("<html><font size=8>"+"Method"+"</font></html>");
+	  model.addColumn("<html><font size=8>"+"Class Name"+"</font></html>");
+	  model.addColumn("<html><font size=8>"+"Static Or Not"+"</font></html>");
+	  model.addColumn("<html><font size=8>"+"Start Time"+"</font></html>");
+	  model.addColumn("<html><font size=8>"+"End Time"+"</font></html>");
+	  model.addColumn("<html><font size=8>"+"Parameter"+"</font></html>");
+	  model.addColumn("<html><font size=8>"+"Return Type"+"</font></html>");
+	  model.addColumn("<html><font size=8>"+"Stack Trace"+"</font></html>");
 	 
 	  for(Method met: p.getIncompleteMethods()){
 		  model.addRow(new Object[] {serialNo, met.getRuntime(),met.getMethodName(), met.getClass(), met.isStaticOrNot(), met.getStartTime(), met.getEndTime(), met.getParameters(), met.getReturnType(), "Click to see stackTrace"}); 
@@ -96,15 +100,3 @@ public class TableBuilder {
 		return table;
 	}
 }
-
-/*class ButtonRenderer extends JButton implements TableCellRenderer{
-	public ButtonRenderer() {
-		
-	}
-	@Override
-	public Component getTableCellRendererComponent(JTable table, Object value,
-			boolean isSelected, boolean hasFocus, int row, int column) {
-		setText((value==null) ? "":value.toString());
-		return this;
-	}
-}*/
