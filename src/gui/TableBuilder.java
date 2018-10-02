@@ -88,8 +88,7 @@ public class TableBuilder {
 			            d.setVisible(true);
 		        	}
 		        	catch(NullPointerException ex){
-		        		System.out.println("Here");
-		        		d.add(new JLabel("StackTrace not available for this method in the log file"));
+		        		//d.add(new JLabel("StackTrace not available for this method in the log file"));
 		        		d.setVisible(true);
 		        	}
 		        }

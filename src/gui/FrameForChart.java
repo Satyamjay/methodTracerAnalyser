@@ -61,12 +61,11 @@ public class FrameForChart extends JFrame {
 				Pattern pat = Pattern.compile(".+\\s\\(([0-9]+)\\),.+");
 				Matcher mat = pat.matcher(e.getEntity().toString());
 				if(mat.matches()){
-					Method met = p.getMethodById(Integer.parseInt((mat.group(1))));
+					final Method met = p.getMethodById(Integer.parseInt((mat.group(1))));
 					String[] columns = new String[]{
 				            "MethodName", "ClassName", "Static", "StartTime", "EndTime", "TotalRuntime", "Parameters", "ReturnType", "StackTrace"
 					};
-				    //actual data for the table in a 2d array
-				    Object[][] data = new Object[][] {{met.getMethodName(), met.getClass(), met.isStaticOrNot(), met.getStartTime(), met.getEndTime(), met.getRuntime(), met.getParameters(), met.getReturnType(), met.getMethodStack()}};
+				    Object[][] data = new Object[][] {{met.getMethodName(), met.getClass(), met.isStaticOrNot(), met.getStartTime(), met.getEndTime(), met.getRuntime(), met.getParameters(), met.getReturnType(), "StackTrace"}};
 			        final JTable table = new JTable(data, columns);
 			        table.setFont(new Font("Serif", Font.PLAIN, 20));
 			        table.setRowHeight(40);
@@ -77,25 +76,23 @@ public class FrameForChart extends JFrame {
 					        int row = table.rowAtPoint(evt.getPoint());
 					        int col = table.columnAtPoint(evt.getPoint());
 					        if (col==8) {
-					        	Method m = p.getMethodById(row);
 					        	JDialog d = new JDialog();
 					        	d.setSize(500, 1000);
 					            d.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 					        	try{
-						        	List<String> methodStackList = new ArrayList<String>(m.getMethodStack());
-					        		d.setTitle(m.getMethodName()+" Stack Trace");
+						        	List<String> methodStackList = new ArrayList<String>(met.getMethodStack());
+					        		d.setTitle(met.getMethodName()+" Stack Trace");
 						            DefaultTableModel model = new DefaultTableModel();
 						        	JTable t = new JTable(model);
 						      	    model.addColumn("<html><font size=8>"+"StackTrace"+"</font></html>");
+						      	    d.setTitle("StackTrace For "+met.getMethodName());
 						      	    for(String method: methodStackList){
 						    		  model.addRow(new Object[] {method});
 						    	    }
-						      	    d.setTitle("StackTrace For "+m.getMethodName());
 						            d.add(t);
 						            d.setVisible(true);
 					        	}
 					        	catch(NullPointerException ex){
-					        		d.add(new JLabel("StackTrace not available for this method in the log file"));
 					        		d.setVisible(true);
 					        	}
 					        }
