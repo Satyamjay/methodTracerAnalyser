@@ -76,7 +76,6 @@ public class TableBuilder {
 		            d.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		        	try{
 			        	List<String> methodStackList = new ArrayList<String>(m.getMethodStack());
-		        		System.out.println(m.getMethodStack());
 		        		d.setTitle(m.getMethodName()+" Stack Trace");
 			            DefaultTableModel model = new DefaultTableModel();
 			        	JTable t = new JTable(model);
